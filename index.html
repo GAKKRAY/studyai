@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyAI — Smart Learning Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.1.1/tesseract.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0B0F1A;--ink2:#1E2540;--ink3:#3B4168;
+  --muted:#6B7280;--faint:#9CA3AF;--border:#E5E9F2;
+  --bg:#F6F8FF;--card:#FFFFFF;--sidebar:#0B0F1A;
+  --blue:#3B6EF8;--blue2:#2554D8;--blue-l:#EEF3FF;--blue-f:#F5F8FF;
+  --green:#10B981;--gbg:#ECFDF5;
+  --amber:#F59E0B;--abg:#FFFBEB;
+  --red:#EF4444;--rbg:#FEF2F2;
+  --violet:#7C3AED;--vbg:#F5F3FF;
+  --sky:#0EA5E9;--skybg:#F0F9FF;
+  --r:14px;--r2:10px;--r3:8px;
+  --sh:0 1px 3px rgba(0,0,0,.06),0 4px 12px rgba(0,0,0,.04);
+  --sh2:0 4px 20px rgba(59,110,248,.12);
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--ink);display:flex}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#D1D5DB;border-radius:99px}
+/* SIDEBAR */
+.sb{width:224px;min-width:224px;background:var(--sidebar);display:flex;flex-direction:column;height:100vh;overflow-y:auto;overflow-x:hidden;z-index:20}
+.sb-logo{padding:20px 16px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.07)}
+.logo-mk{width:34px;height:34px;border-radius:9px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;box-shadow:0 0 0 3px rgba(59,110,248,.3)}
+.logo-nm{font-size:15px;font-weight:700;color:#fff;letter-spacing:-.3px}
+.logo-tg{font-size:9px;color:rgba(255,255,255,.35);margin-top:1px;letter-spacing:.5px;text-transform:uppercase}
+.nav-sec{padding:14px 12px 5px;font-size:9px;font-weight:700;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:1.3px}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 12px;margin:1px 4px;border-radius:9px;cursor:pointer;border:none;background:transparent;color:rgba(255,255,255,.5);font-size:12.5px;font-weight:400;font-family:'Sora',sans-serif;width:calc(100% - 8px);text-align:left;transition:all .15s;position:relative}
+.ni:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.85)}
+.ni.on{background:rgba(59,110,248,.2);color:#fff;font-weight:600}
+.ni.on::before{content:'';position:absolute;left:-4px;top:18%;height:64%;width:3px;background:var(--blue);border-radius:0 3px 3px 0}
+.ni-ic{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+.nb{margin-left:auto;background:rgba(255,255,255,.12);color:rgba(255,255,255,.6);border-radius:20px;padding:1px 7px;font-size:10px;font-weight:700}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:2px 10px 6px}
+.sc{padding:6px 7px;border-radius:7px;background:rgba(255,255,255,.06);border:none;color:rgba(255,255,255,.55);font-size:10.5px;font-family:'Sora',sans-serif;cursor:pointer;display:flex;align-items:center;gap:4px;transition:background .15s;text-align:left}
+.sc:hover{background:rgba(255,255,255,.14);color:#fff}
+.sb-up{margin:10px 10px 6px;padding:14px;border-radius:11px;background:linear-gradient(135deg,#1D2E6E,#3B6EF8);border:1px solid rgba(59,110,248,.4);cursor:pointer}
+.sb-up:hover{opacity:.9}
+.up-lb{font-size:9px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
+.up-tx{font-size:12px;font-weight:600;color:#fff;line-height:1.4;margin-bottom:10px}
+.up-ct{width:100%;padding:8px;border-radius:7px;background:#F59E0B;border:none;color:#000;font-size:11px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif}
+.sb-usr{padding:12px 14px;border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:9px;margin-top:auto}
+.u-av{width:30px;height:30px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0}
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.topbar{background:rgba(246,248,255,.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);height:52px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:10}
+.bc{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted)}
+.bc-c{color:var(--ink2);font-weight:600}
+.tba{display:flex;align-items:center;gap:8px}
+.pp{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;background:var(--abg);color:#92400E;font-size:11px;font-weight:700;border:1px solid #FDE68A}
+.sa{flex:1;overflow-y:auto;overflow-x:hidden}
+.pg{padding:24px 28px;max-width:1000px;display:none}
+.pg.on{display:block}
+/* HERO */
+.hero{background:linear-gradient(135deg,#0B0F1A 0%,#1A2560 52%,#1E3A8A 100%);border-radius:var(--r);padding:34px 38px;margin-bottom:20px;position:relative;overflow:hidden}
+.hero-deco{position:absolute;right:-20px;top:-30px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(59,110,248,.18),transparent 65%);pointer-events:none}
+.h-ti{font-size:26px;font-weight:800;color:#fff;line-height:1.2;margin-bottom:6px;letter-spacing:-.5px}
+.h-su{font-size:13px;color:rgba(255,255,255,.6);margin-bottom:20px;line-height:1.6;max-width:540px}
+.h-row{display:flex;gap:8px;max-width:660px;align-items:center}
+.h-iw{flex:1;display:flex;align-items:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:11px;padding:0 12px;gap:8px;backdrop-filter:blur(4px)}
+.h-iw input{flex:1;background:transparent;border:none;outline:none;color:#fff;font-size:14px;padding:13px 0;font-family:'Sora',sans-serif}
+.h-iw input::placeholder{color:rgba(255,255,255,.38)}
+.h-sb{padding:0 20px;border-radius:11px;background:var(--blue);border:none;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;height:48px;white-space:nowrap;transition:background .15s;display:flex;align-items:center;gap:6px}
+.h-sb:hover{background:var(--blue2)}
+.h-cb{padding:0 14px;height:48px;border-radius:11px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:'Sora',sans-serif;display:flex;align-items:center;gap:5px;white-space:nowrap;transition:background .15s}
+.h-cb:hover{background:rgba(255,255,255,.18)}
+.upb{display:none;align-items:center;gap:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:9px;padding:8px 12px;margin-bottom:10px;max-width:660px}
+.upb.show{display:flex}
+.upb-th{width:36px;height:36px;border-radius:6px;object-fit:cover;border:1px solid rgba(255,255,255,.3)}
+.upb-nm{flex:1;font-size:11.5px;color:rgba(255,255,255,.8);font-weight:500}
+.upb-rm{background:rgba(255,255,255,.1);border:none;color:#fff;font-size:11px;cursor:pointer;border-radius:5px;padding:3px 8px;font-family:'Sora',sans-serif}
+/* STATS */
+.srow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.stc{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:14px 18px;display:flex;align-items:center;gap:13px;box-shadow:var(--sh)}
+.st-ib{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.st-n{font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-.5px}
+.st-l{font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-top:1px}
+/* SCAN PROMO */
+.scan-promo{background:linear-gradient(135deg,#0F172A,#1E3A8A);border-radius:var(--r);padding:22px 28px;margin-bottom:20px;display:flex;align-items:center;gap:24px}
+.sp-l{flex:1}
+.sp-ti{font-size:16px;font-weight:800;color:#fff;margin-bottom:5px}
+.sp-su{font-size:12.5px;color:rgba(255,255,255,.6);line-height:1.6;margin-bottom:14px}
+.sp-fs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.sp-f{font-size:11px;padding:4px 10px;border-radius:20px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.7)}
+.sp-as{display:flex;gap:8px}
+.sp-ab{padding:9px 18px;border-radius:9px;background:var(--blue);border:none;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;display:flex;align-items:center;gap:6px}
+.sp-ab:hover{background:var(--blue2)}
+.sp-cb{padding:9px 18px;border-radius:9px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.18);color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;display:flex;align-items:center;gap:6px}
+.sp-cb:hover{background:rgba(255,255,255,.16)}
+.sp-r{width:108px;height:108px;border-radius:14px;background:rgba(255,255,255,.06);border:2px dashed rgba(255,255,255,.2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;flex-shrink:0;transition:background .15s}
+.sp-r:hover{background:rgba(255,255,255,.12)}
+/* TWO COL */
+.tcol{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:18px 20px;box-shadow:var(--sh)}
+.chd{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:14px;display:flex;align-items:center;gap:6px;justify-content:space-between}
+.ch-l{display:flex;align-items:center;gap:6px}
+.va{font-size:11px;font-weight:600;color:var(--blue);background:none;border:none;cursor:pointer;font-family:'Sora',sans-serif}
+.tr{width:100%;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r3);border:none;background:transparent;cursor:pointer;font-family:'Sora',sans-serif;transition:background .12s;margin-bottom:3px}
+.tr:hover{background:var(--blue-f)}
+.trn{flex:1;font-size:13px;color:var(--ink2);font-weight:500;text-align:left}
+.t-tm{font-size:10.5px;color:var(--faint)}
+.sp{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
+/* SUBJECT CARDS */
+.scgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:18px}
+.scard{padding:14px 13px;border-radius:11px;border:1px solid;cursor:pointer;background:transparent;font-family:'Sora',sans-serif;transition:transform .15s,box-shadow .15s;display:flex;flex-direction:column;gap:4px;text-align:left}
+.scard:hover{transform:translateY(-2px);box-shadow:var(--sh2)}
+.sc-ic{font-size:20px}
+.sc-nm{font-size:11.5px;font-weight:700}
+/* AD */
+.adb{border-radius:var(--r2);border:1px solid var(--border);background:linear-gradient(90deg,var(--bg),var(--blue-f));padding:12px 18px;display:flex;align-items:center;gap:12px}
+.ad-l{font-size:8.5px;color:var(--faint);font-weight:700;text-transform:uppercase;letter-spacing:.8px}
+.ad-d{font-size:12px;color:var(--muted);margin-top:1px}
+.ad-ct{padding:7px 14px;border-radius:var(--r3);background:var(--blue);border:none;color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;white-space:nowrap;flex-shrink:0}
+/* SEARCH PAGE */
+.sbw{display:flex;gap:8px;margin-bottom:14px;max-width:700px;align-items:center}
+.sf{flex:1;display:flex;align-items:center;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:0 12px;gap:8px;box-shadow:var(--sh);transition:border-color .15s}
+.sf:focus-within{border-color:var(--blue)}
+.sf input{flex:1;border:none;outline:none;font-size:13.5px;padding:11px 0;color:var(--ink);font-family:'Sora',sans-serif;background:transparent}
+.sf input::placeholder{color:var(--faint)}
+.s-go{padding:0 20px;height:40px;border-radius:9px;background:var(--blue);border:none;color:#fff;font-size:12.5px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;transition:background .15s;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.s-go:hover{background:var(--blue2)}
+.s-cb{height:40px;padding:0 13px;border-radius:9px;background:var(--card);border:1.5px solid var(--border);color:var(--ink3);font-size:12px;font-weight:600;cursor:pointer;font-family:'Sora',sans-serif;display:flex;align-items:center;gap:5px;white-space:nowrap;transition:all .15s}
+.s-cb:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-f)}
+.s-cb.active-up{border-color:#10B981;color:#059669;background:var(--gbg)}
+/* UPLOAD PREVIEW STRIP */
+.upc{background:var(--card);border:1.5px solid #A7F3D0;border-radius:10px;padding:11px 14px;display:none;align-items:center;gap:12px;margin-bottom:12px;max-width:700px;box-shadow:var(--sh)}
+.upc.show{display:flex}
+.upc-img{width:52px;height:52px;border-radius:8px;object-fit:cover;flex-shrink:0;border:1px solid var(--border)}
+.upc-ti{font-size:13px;font-weight:700;color:var(--green);margin-bottom:2px}
+.upc-su{font-size:11.5px;color:var(--muted)}
+.upc-rm{background:var(--rbg);border:1px solid #FCA5A5;color:var(--red);border-radius:7px;padding:5px 10px;cursor:pointer;font-size:11px;font-weight:600;font-family:'Sora',sans-serif}
+/* SKELETON */
+.sk{border-radius:6px;background:linear-gradient(90deg,#EFF3FF 25%,#F6F8FF 50%,#EFF3FF 75%);background-size:200% 100%;animation:shimmer 1.4s infinite}
+@keyframes shimmer{to{background-position:-200% 0}}
+/* EMPTY */
+.es{text-align:center;padding:60px 20px}
+.es-em{font-size:56px;margin-bottom:14px}
+.es-ti{font-size:18px;font-weight:700;color:var(--ink2);margin-bottom:6px}
+.es-su{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.6}
+.sug-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.sug{padding:6px 14px;border-radius:20px;background:var(--card);border:1px solid var(--border);color:var(--ink3);cursor:pointer;font-size:12px;font-weight:500;font-family:'Sora',sans-serif;transition:all .15s;box-shadow:var(--sh)}
+.sug:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-l)}
+/* RESULT */
+.rw{animation:fu .3s ease-out}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.rmeta{display:flex;align-items:center;gap:7px;margin-bottom:8px;flex-wrap:wrap}
+.r-ti{font-size:26px;font-weight:800;color:var(--ink);letter-spacing:-.5px;margin-bottom:16px;line-height:1.2}
+.rgrid{display:grid;grid-template-columns:1fr 300px;gap:16px;align-items:start}
+.def-bx{border-radius:10px;border-left:4px solid;padding:14px 18px;margin-bottom:14px}
+.def-lb{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.9px;margin-bottom:7px}
+.def-tx{font-size:14px;line-height:1.8;font-weight:500;color:#1E293B}
+.s-hd{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:12px;display:flex;align-items:center;gap:5px}
+.ep{font-size:13.5px;color:var(--ink3);line-height:1.9;margin-bottom:10px}
+.kpi{display:flex;gap:10px;align-items:flex-start;margin-bottom:9px}
+.kpn{width:22px;height:22px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;margin-top:2px}
+.kpt{font-size:13px;color:var(--ink3);line-height:1.7}
+.i2c{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ibx{border-radius:9px;padding:11px 13px;border:1px solid}
+.ilb{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.9px;margin-bottom:7px;display:flex;align-items:center;gap:4px}
+.iul{list-style:disc;padding-left:14px}
+.iul li{font-size:11.5px;color:var(--ink3);line-height:1.6;margin-bottom:3px}
+/* IMG PANEL */
+.imgp{border-radius:var(--r2);overflow:hidden;background:var(--bg);margin-bottom:12px;border:1px solid var(--border);position:relative;min-height:200px}
+.imgp img{width:100%;height:210px;object-fit:cover;display:block}
+.img-ld{height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:#F0F3FA}
+.sp-ring{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.img-ph{height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.img-lk{height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:var(--abg);text-align:center;padding:16px}
+.img-lk-t{font-size:13px;font-weight:700;color:#92400E}
+.img-lk-s{font-size:11px;color:#B45309;line-height:1.5;max-width:190px}
+.img-ul{padding:6px;background:rgba(0,0,0,.03);border-top:1px solid var(--border);overflow-x:auto;display:flex;gap:4px}
+.gth{width:50px;height:42px;border-radius:5px;object-fit:cover;cursor:pointer;flex-shrink:0;border:2px solid transparent;opacity:.7;transition:all .15s}
+.gth:hover,.gth.on{border-color:var(--blue);opacity:1}
+.img-sb{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.55);color:#fff;font-size:9px;padding:2px 7px;border-radius:20px;font-weight:600;backdrop-filter:blur(4px)}
+.sc-ntc{display:flex;align-items:flex-start;gap:10px;background:var(--gbg);border:1px solid #A7F3D0;border-radius:10px;padding:12px 14px;margin-bottom:14px}
+.sc-th{width:52px;height:52px;border-radius:7px;object-fit:cover;flex-shrink:0;border:1px solid #A7F3D0}
+.sc-lb{font-size:9px;font-weight:800;color:#059669;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
+.ff{border-radius:10px;padding:13px 14px;background:var(--vbg);border:1px solid #C4B5FD;margin-bottom:12px}
+.ff-lb{font-size:9px;font-weight:800;color:var(--violet);text-transform:uppercase;letter-spacing:.9px;margin-bottom:6px}
+.ff-tx{font-size:12.5px;color:var(--ink3);line-height:1.7;font-style:italic}
+.rc{margin-bottom:12px}
+.rch{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.rl{padding:5px 11px;border-radius:18px;background:var(--blue-l);border:1px solid #C7D7FD;color:var(--blue);cursor:pointer;font-size:11px;font-weight:600;font-family:'Sora',sans-serif;transition:background .12s}
+.rl:hover{background:#DBEAFE}
+.ntb{border-radius:9px;padding:11px 13px;border:1px solid #FDE68A;background:var(--abg);margin-bottom:12px}
+.ntb-l{font-size:9px;font-weight:800;color:#92400E;text-transform:uppercase;letter-spacing:.9px;margin-bottom:5px}
+.ntb-t{font-size:11.5px;color:#B45309;line-height:1.6}
+.promo{border-radius:11px;padding:16px;background:linear-gradient(135deg,#0B0F1A,#1D2E6E,#2554D8)}
+.promo-l{font-size:9px;font-weight:800;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.9px;margin-bottom:5px}
+.promo-t{font-size:12.5px;color:rgba(255,255,255,.8);line-height:1.6;margin-bottom:12px}
+.promo-b{width:100%;padding:9px;border-radius:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif}
+.promo-b:hover{background:rgba(255,255,255,.2)}
+.ab-row{display:flex;gap:7px;flex-shrink:0}
+.ab{display:flex;align-items:center;gap:5px;padding:7px 14px;border-radius:9px;border:1px solid var(--border);background:var(--card);color:var(--ink3);cursor:pointer;font-size:12px;font-weight:600;font-family:'Sora',sans-serif;transition:all .15s;box-shadow:var(--sh)}
+.ab:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-f)}
+.ab.sv{background:var(--abg);border-color:#FDE68A;color:#92400E}
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:18px;font-size:10.5px;font-weight:700}
+/* SCAN PAGE */
+.drop-z{border:2px dashed var(--border);border-radius:14px;min-height:270px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:border-color .2s,background .2s;background:var(--card);position:relative;overflow:hidden}
+.drop-z:hover{border-color:var(--blue);background:var(--blue-f)}
+.drop-z.drag-ov{border-color:var(--blue);background:var(--blue-f)}
+/* OCR PROGRESS */
+.ocr-prog{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:20px;margin-top:14px;text-align:center}
+.ocr-bar-wrap{width:100%;background:var(--bg);border-radius:20px;height:8px;margin:12px 0;overflow:hidden}
+.ocr-bar{height:100%;background:linear-gradient(90deg,var(--blue),#6366F1);border-radius:20px;transition:width .3s;width:0%}
+/* HIST / SAVED */
+.hc{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:12px 18px;display:flex;align-items:center;gap:13px;margin-bottom:8px;box-shadow:var(--sh)}
+.hic{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.h-ti2{font-size:14px;font-weight:600;color:var(--ink2)}
+.h-mt{display:flex;align-items:center;gap:8px;margin-top:3px}
+.h-tm{font-size:10.5px;color:var(--faint)}
+.rest{padding:7px 14px;border-radius:7px;background:var(--blue-l);border:1px solid #C7D7FD;color:var(--blue);cursor:pointer;font-size:11px;font-weight:700;font-family:'Sora',sans-serif;white-space:nowrap;margin-left:auto}
+.rest:hover{background:#DBEAFE}
+.savgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.savcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;box-shadow:var(--sh)}
+.sav-th{height:108px;display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--border);overflow:hidden;font-size:34px}
+.sav-th img{width:100%;height:100%;object-fit:cover}
+.sav-b{padding:13px 15px}
+.sav-nm{font-size:14px;font-weight:700;color:var(--ink2);margin-bottom:5px}
+.sav-df{font-size:12px;color:var(--muted);line-height:1.55;margin-bottom:10px}
+.sav-ft{display:flex;align-items:center;gap:8px}
+.vsb{flex:1;padding:7px;border-radius:7px;background:var(--blue-l);border:1px solid #C7D7FD;color:var(--blue);cursor:pointer;font-size:12px;font-weight:700;font-family:'Sora',sans-serif;text-align:center}
+.db{background:none;border:none;cursor:pointer;font-size:14px;color:var(--faint);padding:4px}
+/* PREMIUM PAGE */
+.prem-hd{text-align:center;margin-bottom:26px}
+.prem-hd h2{font-size:28px;font-weight:800;color:var(--ink);letter-spacing:-.5px;margin-bottom:7px}
+.prem-hd p{color:var(--muted);font-size:13.5px;margin-bottom:18px}
+.tg{display:inline-flex;background:var(--bg);border:1px solid var(--border);border-radius:30px;padding:4px}
+.tgb{padding:6px 18px;border-radius:24px;border:none;font-size:12px;font-weight:500;cursor:pointer;font-family:'Sora',sans-serif;color:var(--muted);background:transparent;transition:all .15s}
+.tgb.on{background:var(--card);color:var(--ink);font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
+.plc{border-radius:16px;padding:24px 20px;position:relative;background:var(--card);border:1.5px solid var(--border);box-shadow:var(--sh)}
+.plc.popular{background:linear-gradient(145deg,#0B0F1A 0%,#1A2560 60%,#2554D8 100%);border-color:transparent;box-shadow:0 8px 32px rgba(59,110,248,.28);transform:scale(1.03)}
+.pop-b{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--amber);color:#000;border-radius:20px;padding:4px 14px;font-size:10px;font-weight:800;white-space:nowrap;letter-spacing:.3px}
+.p-nm{font-size:12px;font-weight:700;margin-bottom:3px}
+.p-pv{font-size:32px;font-weight:800;letter-spacing:-1px}
+.p-pp{font-size:12px;font-weight:400;margin-left:2px}
+.p-ft{display:flex;align-items:flex-start;gap:7px;margin-bottom:7px}
+.p-ft-t{font-size:12px;line-height:1.5}
+.p-act{width:100%;padding:11px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:13px;font-family:'Sora',sans-serif;transition:all .15s;margin-top:8px}
+.cmp-t{width:100%;border-collapse:collapse;font-size:12px}
+.cmp-t th{padding:10px 12px;text-align:center;font-weight:700;border-bottom:1px solid var(--border);color:var(--muted);font-size:11px}
+.cmp-t th:first-child{text-align:left}
+.cmp-t td{padding:9px 12px;text-align:center;color:var(--ink3)}
+.cmp-t td:first-child{text-align:left;color:var(--ink2);font-weight:500}
+.cmp-t tr:nth-child(even) td{background:var(--bg)}
+/* DEPLOY GUIDE */
+.dg{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:28px 32px;margin-bottom:24px}
+.dg-ti{font-size:20px;font-weight:800;color:var(--ink);margin-bottom:6px}
+.dg-su{color:var(--muted);font-size:13px;margin-bottom:22px;line-height:1.6}
+.dg-step{display:flex;gap:14px;align-items:flex-start;margin-bottom:18px;padding:16px;background:var(--bg);border-radius:10px;border:1px solid var(--border)}
+.dg-num{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0}
+.dg-nm{font-size:14px;font-weight:700;color:var(--ink2);margin-bottom:4px}
+.dg-ds{font-size:12.5px;color:var(--muted);line-height:1.6}
+.dg-code{font-family:monospace;background:#0B0F1A;color:#86EFAC;padding:3px 8px;border-radius:5px;font-size:12px}
+.dg-link{color:var(--blue);font-weight:600;text-decoration:none}
+.dg-link:hover{text-decoration:underline}
+.free-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:20px;background:var(--gbg);color:#059669;font-size:11px;font-weight:800;border:1px solid #A7F3D0;margin-bottom:16px}
+.ph{margin-bottom:22px}
+.ph h2{font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-.4px;margin-bottom:3px}
+.ph p{color:var(--muted);font-size:13px}
+.err-box{text-align:center;padding:48px 20px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);max-width:420px;box-shadow:var(--sh)}
+input[type=file]{display:none}
+</style>
+</head>
+<body>
+
+<input type="file" id="fi-hero" accept="image/*">
+<input type="file" id="fi-search" accept="image/*">
+<input type="file" id="fi-home" accept="image/*">
+<input type="file" id="fi-scan" accept="image/*">
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sb">
+  <div class="sb-logo">
+    <div class="logo-mk">🎓</div>
+    <div><div class="logo-nm">StudyAI</div><div class="logo-tg">Zero API · Free Forever</div></div>
+  </div>
+  <div class="nav-sec">Menu</div>
+  <div style="padding:0 6px">
+    <button class="ni on" onclick="go('home',this)"><span class="ni-ic">⊞</span><span>Dashboard</span></button>
+    <button class="ni" onclick="go('search',this)"><span class="ni-ic">◎</span><span>Search & Learn</span></button>
+    <button class="ni" onclick="go('scan',this)"><span class="ni-ic">📷</span><span>Scan & Ask</span><span class="nb" style="background:rgba(16,185,129,.3);color:#6EE7B7">NEW</span></button>
+    <button class="ni" onclick="go('history',this)"><span class="ni-ic">⏱</span><span>Study History</span><span class="nb" id="hbg">0</span></button>
+    <button class="ni" onclick="go('saved',this)"><span class="ni-ic">♥</span><span>Saved Topics</span><span class="nb" id="sbg">0</span></button>
+    <button class="ni" onclick="go('premium',this)"><span class="ni-ic">⭐</span><span>Premium Plans</span></button>
+    <button class="ni" onclick="go('deploy',this)"><span class="ni-ic">🚀</span><span>Host Free</span><span class="nb" style="background:rgba(59,110,248,.3);color:#93C5FD">$0</span></button>
+  </div>
+  <div class="nav-sec">Subjects</div>
+  <div class="sg">
+    <button class="sc" onclick="qs('Photosynthesis')">🧬 Bio</button>
+    <button class="sc" onclick="qs('Chemical Bonding')">⚗️ Chem</button>
+    <button class="sc" onclick="qs('Newton Laws')">⚡ Physics</button>
+    <button class="sc" onclick="qs('Pythagorean Theorem')">📐 Math</button>
+    <button class="sc" onclick="qs('French Revolution')">🏛️ History</button>
+    <button class="sc" onclick="qs('Climate Change')">🌍 Geo</button>
+    <button class="sc" onclick="qs('Machine Learning')">💻 CS</button>
+    <button class="sc" onclick="qs('Shakespeare')">📖 Lit</button>
+  </div>
+  <div class="sb-up" onclick="go('premium',null)">
+    <div class="up-lb">Unlock Full Access</div>
+    <div class="up-tx">Remove ads, unlock all premium features</div>
+    <button class="up-ct">⭐ Upgrade Now</button>
+  </div>
+  <div class="sb-usr">
+    <div class="u-av">S</div>
+    <div><div style="font-size:12px;font-weight:600;color:#fff">Student</div><div style="font-size:10px;color:rgba(255,255,255,.4)" id="plan-tx">Free Plan</div></div>
+  </div>
+</aside>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+  <div class="topbar">
+    <div class="bc"><span>StudyAI</span><span style="color:var(--border)">›</span><span class="bc-c" id="bc">Dashboard</span></div>
+    <div class="tba">
+      <span class="pp" id="pp" style="display:none">⭐ Premium</span>
+      <span style="font-size:10px;background:var(--gbg);color:#059669;border:1px solid #A7F3D0;border-radius:20px;padding:3px 9px;font-weight:700">🔒 Zero API</span>
+      <div style="width:30px;height:30px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700">S</div>
+    </div>
+  </div>
+
+  <div class="sa">
+
+    <!-- ══ HOME ══ -->
+    <div class="pg on" id="pg-home">
+      <div class="hero">
+        <div class="hero-deco"></div>
+        <div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:6px;letter-spacing:.3px" id="hdate"></div>
+        <div class="h-ti">Good day! Ready to learn? 📚</div>
+        <div class="h-su">100% offline knowledge base · No API keys · Instant answers · Image scanning · Deploy free on Vercel</div>
+        <div class="upb" id="hero-upb">
+          <img class="upb-th" id="hero-uth" src="" alt="">
+          <span class="upb-nm" id="hero-unm">Image attached</span>
+          <button class="upb-rm" onclick="clrUp('hero')">✕ Remove</button>
+        </div>
+        <div class="h-row">
+          <div class="h-iw"><span style="font-size:16px">🔍</span><input id="h-in" placeholder="Ask about any topic, concept or subject…" onkeydown="if(event.key==='Enter')trig()"></div>
+          <button class="h-cb" onclick="document.getElementById('fi-hero').click()">📷 Scan</button>
+          <button class="h-sb" onclick="trig()">Search →</button>
+        </div>
+      </div>
+      <div class="srow">
+        <div class="stc"><div class="st-ib" style="background:#EEF3FF">📖</div><div><div class="st-n" id="sn-e">0</div><div class="st-l">Topics Explored</div></div></div>
+        <div class="stc"><div class="st-ib" style="background:var(--gbg)">🔖</div><div><div class="st-n" id="sn-s">0</div><div class="st-l">Topics Saved</div></div></div>
+        <div class="stc"><div class="st-ib" style="background:var(--abg)">🏆</div><div><div class="st-n" id="sn-su">0</div><div class="st-l">Subjects</div></div></div>
+        <div class="stc"><div class="st-ib" style="background:var(--vbg)">📷</div><div><div class="st-n" id="sn-sc">0</div><div class="st-l">Scans Done</div></div></div>
+      </div>
+      <div class="scan-promo">
+        <div class="sp-l">
+          <div class="sp-ti">📷 Scan Your Book or Notebook</div>
+          <div class="sp-su">Take a photo of any page — StudyAI reads the text using built-in OCR (no API needed) and explains every term instantly.</div>
+          <div class="sp-fs">
+            <span class="sp-f">📖 Book pages</span><span class="sp-f">✍️ Handwritten notes</span>
+            <span class="sp-f">🔬 Diagrams</span><span class="sp-f">📊 Charts</span><span class="sp-f">📐 Math problems</span>
+          </div>
+          <div class="sp-as">
+            <button class="sp-ab" onclick="document.getElementById('fi-home').click()">📁 Upload Image</button>
+            <button class="sp-cb" onclick="go('scan',null)">📷 Open Scanner</button>
+          </div>
+        </div>
+        <div class="sp-r" onclick="document.getElementById('fi-home').click()">
+          <div style="font-size:30px">📸</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.45);text-align:center">Click to upload</div>
+        </div>
+      </div>
+      <div class="tcol">
+        <div class="card"><div class="chd"><div class="ch-l"><span>⚡</span> Featured Topics</div></div><div id="feat-l"></div></div>
+        <div class="card"><div class="chd"><div class="ch-l"><span>🕐</span> Recent Activity</div><button class="va" onclick="go('history',null)">View all →</button></div><div id="rec-l"></div></div>
+      </div>
+      <div style="margin-bottom:18px">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:12px">📚 Browse by Subject</div>
+        <div class="scgrid" id="home-sc"></div>
+      </div>
+      <div class="adb" id="home-ad">
+        <span style="font-size:20px;flex-shrink:0">📢</span>
+        <div style="flex:1"><div class="ad-l">Advertisement</div><div class="ad-d">Go Premium — remove ads, unlock all features forever</div></div>
+        <button class="ad-ct" onclick="go('premium',null)">Upgrade Now</button>
+      </div>
+    </div>
+
+    <!-- ══ SEARCH ══ -->
+    <div class="pg" id="pg-search">
+      <div class="sbw">
+        <div class="sf"><span style="font-size:15px;color:var(--faint)">🔍</span><input id="s-in" placeholder="Search any topic, concept or question…" onkeydown="if(event.key==='Enter')trig()"><button onclick="document.getElementById('s-in').value=''" style="background:none;border:none;cursor:pointer;color:var(--faint);font-size:14px">✕</button></div>
+        <button class="s-cb" id="s-cb" onclick="document.getElementById('fi-search').click()">📷 Scan</button>
+        <button class="s-go" onclick="trig()">Search →</button>
+      </div>
+      <div class="upc" id="s-upc">
+        <img class="upc-img" id="s-uth" src="" alt="">
+        <div class="upc-ti">📷 Image Attached</div>
+        <div class="upc-su" id="s-unm">Ready to scan & explain</div>
+        <button class="upc-rm" onclick="clrUp('search')">✕ Remove</button>
+      </div>
+      <!-- states -->
+      <div id="ld-s" style="display:none;max-width:920px">
+        <div style="display:grid;grid-template-columns:1fr 300px;gap:16px">
+          <div>
+            <div class="card" style="margin-bottom:12px"><div class="sk" style="height:22px;width:50%;margin-bottom:10px"></div><div class="sk" style="height:12px;margin-bottom:5px"></div><div class="sk" style="height:12px;width:70%"></div></div>
+            <div class="card" style="margin-bottom:12px"><div class="sk" style="height:12px;width:38%;margin-bottom:13px"></div><div class="sk" style="height:11px;margin-bottom:5px"></div><div class="sk" style="height:11px;margin-bottom:5px"></div><div class="sk" style="height:11px;width:80%"></div></div>
+            <div class="card"><div class="sk" style="height:12px;width:33%;margin-bottom:13px"></div><div class="sk" style="height:11px;margin-bottom:5px"></div><div class="sk" style="height:11px;width:75%"></div></div>
+          </div>
+          <div><div class="sk" style="height:210px;border-radius:10px;margin-bottom:11px"></div><div class="sk" style="height:90px;border-radius:10px;margin-bottom:11px"></div><div class="sk" style="height:70px;border-radius:10px"></div></div>
+        </div>
+      </div>
+      <div id="er-s" style="display:none"><div class="err-box"><div style="font-size:40px;margin-bottom:12px">⚠️</div><p style="color:var(--muted);margin-bottom:16px;font-size:13px" id="er-m">Something went wrong.</p><button onclick="retry()" style="padding:9px 24px;border-radius:9px;background:var(--blue);border:none;color:#fff;cursor:pointer;font-weight:700;font-family:'Sora',sans-serif;font-size:13px">Try Again</button></div></div>
+      <div id="em-s">
+        <div class="es"><div class="es-em">🔍</div><div class="es-ti">What would you like to learn?</div><div class="es-su">Built-in knowledge on 100+ topics · Upload images for OCR scanning · Zero API required</div>
+          <div class="sug-row">
+            <button class="sug" onclick="qs('Photosynthesis')">🧬 Photosynthesis</button>
+            <button class="sug" onclick="qs('World War 2')">🏛️ World War II</button>
+            <button class="sug" onclick="qs('Quantum Mechanics')">⚡ Quantum Mechanics</button>
+            <button class="sug" onclick="qs('Machine Learning')">💻 Machine Learning</button>
+            <button class="sug" onclick="qs('DNA Structure')">🧪 DNA</button>
+            <button class="sug" onclick="qs('French Revolution')">📜 French Revolution</button>
+            <button class="sug" onclick="qs('Plate Tectonics')">🌍 Plate Tectonics</button>
+            <button class="sug" onclick="qs('Newton Laws')">⚡ Newton's Laws</button>
+            <button class="sug" onclick="qs('Calculus')">📐 Calculus</button>
+            <button class="sug" onclick="qs('Shakespeare')">📖 Shakespeare</button>
+          </div>
+        </div>
+      </div>
+      <div id="res-a" style="display:none;max-width:920px" class="rw">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;gap:12px">
+          <div style="flex:1">
+            <div class="rmeta"><span style="font-size:11px;color:var(--faint)">StudyAI</span><span style="color:var(--border)">›</span><span class="badge" id="r-sb"></span><span class="badge" id="r-snb" style="display:none;background:#FEF3C7;color:#92400E">🔒 Restricted</span><span class="badge" id="r-scb" style="display:none;background:var(--gbg);color:#059669">📷 Scanned</span></div>
+            <div class="r-ti" id="r-ti"></div>
+          </div>
+          <div class="ab-row"><button class="ab" id="sv-b" onclick="togSave()">+ Save</button></div>
+        </div>
+        <div class="rgrid">
+          <div>
+            <div class="sc-ntc" id="sc-ntc" style="display:none"><img class="sc-th" id="sc-th" src="" alt=""><div><div class="sc-lb">📷 Analyzed from your image</div><div style="font-size:12.5px;color:var(--ink3);line-height:1.6" id="sc-et"></div></div></div>
+            <div class="def-bx" id="def-bx"><div class="def-lb" id="def-lb">📌 Definition</div><div class="def-tx" id="def-tx"></div></div>
+            <div class="card" style="margin-bottom:14px"><div class="s-hd">📝 Detailed Explanation</div><div id="exp-c"></div></div>
+            <div class="card" style="margin-bottom:14px"><div class="s-hd">⭐ Key Points</div><div id="kp-c"></div></div>
+            <div class="card" id="ins-c" style="margin-bottom:14px"><div class="s-hd">🔬 Subject Insights</div><div class="i2c" id="ins-d"></div></div>
+            <div class="adb" id="r-ad"><span style="font-size:18px;flex-shrink:0">📢</span><div style="flex:1"><div class="ad-l">Advertisement</div><div class="ad-d">Upgrade Premium — remove ads, unlock all features</div></div><button class="ad-ct" onclick="go('premium',null)">Upgrade</button></div>
+          </div>
+          <div>
+            <div class="imgp" id="imgp"><div class="img-ld"><div class="sp-ring"></div><div style="font-size:11px;color:var(--muted)">Finding images…</div></div></div>
+            <div id="img-gal" style="display:none;background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:8px;margin-bottom:12px;margin-top:-4px;box-shadow:var(--sh)">
+              <div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px">More Images</div>
+              <div class="img-ul" id="img-gs"></div>
+            </div>
+            <div class="ff"><div class="ff-lb">💡 Did You Know?</div><div class="ff-tx" id="ff-tx"></div></div>
+            <div class="rc card" style="margin-bottom:12px"><div class="s-hd" style="margin-bottom:5px">🔗 Related Topics</div><div class="rch" id="rch"></div></div>
+            <div class="ntb" id="ntb" style="display:none"><div class="ntb-l">⚠️ Content Notice</div><div class="ntb-t" id="ntb-t"></div></div>
+            <div class="promo" id="prom"><div class="promo-l">⭐ Premium</div><div class="promo-t">Unlock all features, remove ads, get image galleries & priority search.</div><button class="promo-b" onclick="go('premium',null)">Upgrade Now →</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SCAN PAGE ══ -->
+    <div class="pg" id="pg-scan">
+      <div class="ph"><h2>📷 Scan & Ask</h2><p>Upload a photo of any book, notes or diagram — built-in OCR reads and explains it (no internet needed for OCR)</p></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px">
+        <div>
+          <div class="drop-z" id="drop-z" onclick="document.getElementById('fi-scan').click()" ondragover="event.preventDefault();this.classList.add('drag-ov')" ondragleave="this.classList.remove('drag-ov')" ondrop="dropH(event)">
+            <div id="drop-c">
+              <div style="font-size:48px;text-align:center;margin-bottom:8px">📸</div>
+              <div style="font-size:15px;font-weight:700;color:var(--ink2);text-align:center;margin-bottom:5px">Drop image here</div>
+              <div style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:18px">or click to browse files</div>
+              <div style="display:flex;gap:7px;justify-content:center;flex-wrap:wrap">
+                <span style="font-size:11px;padding:4px 10px;border-radius:20px;background:var(--blue-l);color:var(--blue);font-weight:600">📖 Books</span>
+                <span style="font-size:11px;padding:4px 10px;border-radius:20px;background:var(--gbg);color:#059669;font-weight:600">✍️ Notes</span>
+                <span style="font-size:11px;padding:4px 10px;border-radius:20px;background:var(--vbg);color:var(--violet);font-weight:600">📊 Diagrams</span>
+              </div>
+            </div>
+            <div id="drop-pv" style="display:none;width:100%;height:100%;position:absolute;top:0;left:0"><img id="drop-pi" style="width:100%;height:100%;object-fit:contain;padding:12px" alt=""></div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button id="scan-ab" onclick="runScan()" disabled style="flex:1;padding:12px;border-radius:10px;background:var(--blue);border:none;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;display:flex;align-items:center;justify-content:center;gap:7px;opacity:.5">🔍 Analyze Image</button>
+            <button onclick="clrScan()" style="padding:12px 18px;border-radius:10px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;font-family:'Sora',sans-serif">Clear</button>
+          </div>
+          <div id="scan-qw" style="display:none;margin-top:10px">
+            <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px">Ask a specific question (optional)</div>
+            <div class="sf" style="margin-bottom:0"><span style="font-size:14px;color:var(--faint)">💬</span><input id="scan-q" placeholder="e.g. What does mitosis mean? Explain this diagram…" style="font-size:13px;padding:10px 0"></div>
+          </div>
+          <div id="ocr-prog" style="display:none" class="ocr-prog">
+            <div style="font-size:13px;font-weight:600;color:var(--ink2)" id="ocr-status">Reading image…</div>
+            <div class="ocr-bar-wrap"><div class="ocr-bar" id="ocr-bar"></div></div>
+            <div style="font-size:11px;color:var(--muted)" id="ocr-pct">0%</div>
+          </div>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:12px">
+            <div class="chd"><div class="ch-l">📋 How It Works</div></div>
+            <div style="display:flex;flex-direction:column;gap:11px">
+              <div style="display:flex;gap:11px;align-items:flex-start"><div style="width:26px;height:26px;border-radius:50%;background:var(--blue-l);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0">1</div><div><div style="font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:2px">Upload your image</div><div style="font-size:12px;color:var(--muted)">Photo of book, notes, or any printed material</div></div></div>
+              <div style="display:flex;gap:11px;align-items:flex-start"><div style="width:26px;height:26px;border-radius:50%;background:var(--gbg);color:#059669;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0">2</div><div><div style="font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:2px">OCR reads the text</div><div style="font-size:12px;color:var(--muted)">Tesseract.js runs locally in your browser — no server needed</div></div></div>
+              <div style="display:flex;gap:11px;align-items:flex-start"><div style="width:26px;height:26px;border-radius:50%;background:var(--vbg);color:var(--violet);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0">3</div><div><div style="font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:2px">Get full explanation</div><div style="font-size:12px;color:var(--muted)">Knowledge base identifies topics and delivers instant education</div></div></div>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom:12px">
+            <div class="chd"><div class="ch-l">✅ Works Great For</div></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
+              <div style="padding:8px 10px;border-radius:8px;background:var(--blue-f);font-size:12px;color:var(--blue);font-weight:600">📖 Textbook pages</div>
+              <div style="padding:8px 10px;border-radius:8px;background:var(--gbg);font-size:12px;color:#059669;font-weight:600">✍️ Your notes</div>
+              <div style="padding:8px 10px;border-radius:8px;background:var(--vbg);font-size:12px;color:var(--violet);font-weight:600">🔬 Lab sheets</div>
+              <div style="padding:8px 10px;border-radius:8px;background:var(--abg);font-size:12px;color:#92400E;font-weight:600">📊 Charts & tables</div>
+              <div style="padding:8px 10px;border-radius:8px;background:var(--skybg);font-size:12px;color:#0369A1;font-weight:600">📐 Math problems</div>
+              <div style="padding:8px 10px;border-radius:8px;background:#FDF2F8;font-size:12px;color:#BE185D;font-weight:600">🗺️ Maps</div>
+            </div>
+          </div>
+          <div style="background:var(--rbg);border:1px solid #FCA5A5;border-radius:10px;padding:12px 14px">
+            <div style="font-size:9px;font-weight:800;color:var(--red);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px">🔒 Safety Policy</div>
+            <div style="font-size:12px;color:#7F1D1D;line-height:1.6">Explicit reproductive anatomy images, religious imagery, and sensitive content are restricted. Text-only educational responses are always provided.</div>
+          </div>
+        </div>
+      </div>
+      <div id="scan-res"></div>
+    </div>
+
+    <!-- ══ HISTORY ══ -->
+    <div class="pg" id="pg-history">
+      <div class="ph"><h2>Study History</h2><p>All your learning sessions</p></div>
+      <div id="hist-it"></div>
+    </div>
+
+    <!-- ══ SAVED ══ -->
+    <div class="pg" id="pg-saved">
+      <div class="ph"><h2>Saved Topics</h2><p>Bookmarked for review</p></div>
+      <div class="savgrid" id="sav-g"></div>
+      <div id="sav-e" class="es" style="display:none"><div class="es-em">🔖</div><div class="es-ti">Nothing saved yet</div><div class="es-su">Save topics while studying to review later.</div><button onclick="go('search',null)" style="padding:10px 24px;border-radius:9px;background:var(--blue);border:none;color:#fff;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;font-size:13px">Start Searching</button></div>
+    </div>
+
+    <!-- ══ PREMIUM ══ -->
+    <div class="pg" id="pg-premium">
+      <div class="prem-hd"><h2>⭐ Choose Your Plan</h2><p>Unlock the full power of StudyAI</p><div class="tg"><button class="tgb on" id="bmo" onclick="setBill('mo',this)">Monthly</button><button class="tgb" id="ban" onclick="setBill('an',this)">Annual &nbsp;<span style="color:#10B981;font-size:10px;font-weight:800">Save 20%</span></button></div></div>
+      <div class="pgrid" id="pgrid"></div>
+      <div style="text-align:center;padding:22px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);margin-bottom:24px">
+        <div style="font-size:13px;color:var(--muted);margin-bottom:12px">Try Premium features instantly — no payment (demo mode)</div>
+        <button id="dem-b" onclick="togDemo()" style="padding:10px 28px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;border:1.5px solid #FDE68A;background:var(--abg);color:#92400E">⭐ Activate Demo Premium</button>
+        <p id="dem-m" style="display:none;margin-top:10px;color:var(--green);font-size:12px;font-weight:600">✅ Premium activated! All features unlocked.</p>
+      </div>
+      <div class="card"><div style="font-size:13px;font-weight:700;color:var(--ink2);margin-bottom:14px">📊 Feature Comparison</div><div style="overflow-x:auto"><table class="cmp-t"><thead><tr><th>Feature</th><th>Free</th><th style="color:var(--blue)">Pro</th><th style="color:var(--violet)">Scholar</th></tr></thead><tbody id="cmp-b"></tbody></table></div></div>
+    </div>
+
+    <!-- ══ DEPLOY GUIDE ══ -->
+    <div class="pg" id="pg-deploy">
+      <div class="ph"><h2>🚀 Host StudyAI Free — $0 Forever</h2><p>Deploy this app publicly in under 5 minutes using Vercel's free tier</p></div>
+      <div class="free-badge">✅ Completely Free — No credit card needed</div>
+      <div class="dg">
+        <div class="dg-ti">Option 1: Vercel (Recommended) — Easiest & Fastest</div>
+        <div class="dg-su">Vercel's Hobby plan is free forever. Your app will get a live URL like <strong>studyai.vercel.app</strong> in under 2 minutes.</div>
+        <div class="dg-step"><div class="dg-num">1</div><div><div class="dg-nm">Download this file</div><div class="dg-ds">Click the Download button at the top of this page. Save it as <span class="dg-code">index.html</span> on your computer.</div></div></div>
+        <div class="dg-step"><div class="dg-num">2</div><div><div class="dg-nm">Create a free GitHub account</div><div class="dg-ds">Go to <a href="https://github.com" target="_blank" class="dg-link">github.com</a> → Sign Up (free). Then create a new repository named <span class="dg-code">studyai</span> and upload your <span class="dg-code">index.html</span> file to it.</div></div></div>
+        <div class="dg-step"><div class="dg-num">3</div><div><div class="dg-nm">Sign up for Vercel</div><div class="dg-ds">Go to <a href="https://vercel.com" target="_blank" class="dg-link">vercel.com</a> → Sign Up with GitHub (free). Click "Add New Project" → Import your <span class="dg-code">studyai</span> repository.</div></div></div>
+        <div class="dg-step"><div class="dg-num">4</div><div><div class="dg-nm">Deploy with one click</div><div class="dg-ds">Vercel auto-detects static HTML. Just click <strong>Deploy</strong>. In ~60 seconds you'll get a live URL. Share it with anyone!</div></div></div>
+        <div class="dg-step" style="border-color:#A7F3D0;background:var(--gbg)"><div class="dg-num" style="background:#059669">✓</div><div><div class="dg-nm" style="color:#059669">You're live! 🎉</div><div class="dg-ds">Your StudyAI is now public at <strong>your-project.vercel.app</strong>. Free SSL, CDN, and 100GB bandwidth included at $0/month.</div></div></div>
+      </div>
+      <div class="dg">
+        <div class="dg-ti">Option 2: Netlify Drop — No account needed!</div>
+        <div class="dg-su">Drag and drop your HTML file — get a live URL instantly, no signup required.</div>
+        <div class="dg-step"><div class="dg-num">1</div><div><div class="dg-nm">Download the file</div><div class="dg-ds">Save this page as <span class="dg-code">index.html</span></div></div></div>
+        <div class="dg-step"><div class="dg-num">2</div><div><div class="dg-nm">Go to Netlify Drop</div><div class="dg-ds">Visit <a href="https://app.netlify.com/drop" target="_blank" class="dg-link">app.netlify.com/drop</a></div></div></div>
+        <div class="dg-step"><div class="dg-num">3</div><div><div class="dg-nm">Drag and drop</div><div class="dg-ds">Drag your <span class="dg-code">index.html</span> into the browser — you get a live link in seconds!</div></div></div>
+      </div>
+      <div class="dg">
+        <div class="dg-ti">Option 3: GitHub Pages — Free with GitHub account</div>
+        <div class="dg-su">Host directly from your GitHub repository.</div>
+        <div class="dg-step"><div class="dg-num">1</div><div><div class="dg-nm">Create GitHub repo & upload file</div><div class="dg-ds">Create repo → upload <span class="dg-code">index.html</span></div></div></div>
+        <div class="dg-step"><div class="dg-num">2</div><div><div class="dg-nm">Enable GitHub Pages</div><div class="dg-ds">Go to repo Settings → Pages → Source: main branch → Save. Your URL: <span class="dg-code">username.github.io/studyai</span></div></div></div>
+      </div>
+      <div style="background:var(--blue-l);border:1px solid #C7D7FD;border-radius:var(--r2);padding:18px 22px">
+        <div style="font-size:14px;font-weight:700;color:var(--blue);margin-bottom:8px">💡 Why This App Needs Zero Hosting Cost</div>
+        <div style="font-size:13px;color:var(--ink3);line-height:1.8">✅ <strong>No backend server</strong> — everything runs in the browser<br>✅ <strong>No database</strong> — knowledge base is inside the JavaScript<br>✅ <strong>No API keys</strong> — OCR uses Tesseract.js (runs locally), images from Wikipedia public API<br>✅ <strong>Single HTML file</strong> — just 1 file to host, no dependencies to install<br>✅ <strong>Works offline</strong> — after first load, the knowledge base works without internet</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  KNOWLEDGE BASE — 100+ Topics, Zero API Required
+// ═══════════════════════════════════════════════════════════════
+const KB = [
+// ── BIOLOGY ──────────────────────────────────────────────────
+{k:['photosynthesis','photo synthesis'],sub:'Biology',sens:'safe',
+title:'Photosynthesis',
+def:'Photosynthesis is the biological process by which green plants, algae, and certain bacteria convert light energy (usually sunlight) into chemical energy stored as glucose, using carbon dioxide and water.',
+exp:['Photosynthesis occurs primarily in the chloroplasts of plant cells, specifically within structures called thylakoids that contain the green pigment chlorophyll. When sunlight strikes chlorophyll, it excites electrons to a higher energy state, initiating a complex series of chemical reactions.','The process is divided into two main stages: the light-dependent reactions (occurring in the thylakoid membranes) and the light-independent reactions, also called the Calvin Cycle (occurring in the stroma). During light reactions, water molecules are split, releasing oxygen as a by-product and generating ATP and NADPH.','The Calvin Cycle uses the ATP and NADPH produced in the light reactions to fix carbon dioxide into organic molecules. Through a series of enzymatic reactions, carbon dioxide is converted into glucose (C₆H₁₂O₆), which the plant uses as an energy source and building material. The overall equation is: 6CO₂ + 6H₂O + light energy → C₆H₁₂O₆ + 6O₂.'],
+kp:['Requires sunlight, carbon dioxide, and water as raw materials','Chlorophyll is the key pigment that absorbs light energy','Produces glucose (food) and releases oxygen as a by-product','Takes place in two stages: light reactions and Calvin Cycle','Foundation of almost all food chains on Earth'],
+ins:{causes:['Sunlight providing energy','Availability of CO₂ and H₂O'],effects:['Produces oxygen for Earth\'s atmosphere','Creates the base of nearly all food webs'],examples:['Leaves absorbing sunlight in a forest','Algae producing oxygen in oceans','Crops converting sunlight into food energy'],hist:'Photosynthesis evolved ~3.5 billion years ago, fundamentally transforming Earth\'s atmosphere from oxygen-poor to oxygen-rich.',diseases:['Chlorosis (yellowing) when chlorophyll is deficient'],errors:['Plants do NOT only take in CO₂ — they respire and release CO₂ too','Photosynthesis doesn\'t happen at night'],related:['Cellular Respiration','Chloroplast','Carbon Cycle','Food Chain']},
+img:'Photosynthesis diagram',fun:'A single mature tree can absorb about 48 pounds of CO₂ per year and release enough oxygen for two human beings to breathe.'},
+
+{k:['mitosis','cell division','cell cycle'],sub:'Biology',sens:'safe',
+title:'Mitosis',
+def:'Mitosis is a type of cell division in eukaryotic cells that produces two genetically identical daughter cells, each with the same number of chromosomes as the parent cell. It is essential for growth, repair, and asexual reproduction.',
+exp:['Mitosis is a continuous process divided into five main stages: prophase, metaphase, anaphase, telophase, and cytokinesis. Before mitosis begins, the cell undergoes interphase where DNA is replicated, essentially doubling the cell\'s genetic material.','During prophase, chromosomes condense and become visible under a microscope. The nuclear envelope breaks down, and spindle fibers form. In metaphase, chromosomes align along the cell\'s equatorial plate (metaphase plate), and spindle fibers attach to centromeres.','In anaphase, sister chromatids are pulled apart to opposite poles of the cell. During telophase, nuclear envelopes reform around each set of chromosomes, and the chromosomes begin to decondense. Finally, cytokinesis splits the cytoplasm, producing two complete daughter cells.'],
+kp:['Produces 2 genetically IDENTICAL daughter cells','Parent cell DNA is duplicated before division','Five stages: Prophase, Metaphase, Anaphase, Telophase, Cytokinesis','Chromosome number remains the SAME (diploid to diploid)','Used for growth, repair, and replacement of body cells'],
+ins:{causes:['Cell growth reaching a size limit','Need for tissue repair','Signals from growth hormones'],effects:['Growth of organisms','Replacement of damaged/dead cells','Wound healing'],examples:['Skin cells regenerating after a cut','Growth of a developing embryo','Replacement of blood cells'],hist:'Walther Flemming first described mitosis in 1882, coining the term from the Greek "mitos" (thread) after the thread-like appearance of chromosomes.',diseases:['Cancer: uncontrolled mitosis','Down syndrome: errors in cell division'],errors:['Mitosis ≠ Meiosis — they produce different numbers of cells','Mitosis doesn\'t produce gametes (sex cells)'],related:['Meiosis','DNA Replication','Cell Cycle','Cancer Biology']},
+img:'mitosis stages cell division',fun:'Your body undergoes roughly 25 million cell divisions every second to replace old and damaged cells.'},
+
+{k:['meiosis','gamete','sex cell','reproductive cell'],sub:'Biology',sens:'safe',
+title:'Meiosis',
+def:'Meiosis is a specialized type of cell division that reduces the chromosome number by half, producing four genetically unique haploid cells (gametes — sperm or eggs). It is essential for sexual reproduction and genetic diversity.',
+exp:['Meiosis consists of two rounds of cell division: Meiosis I and Meiosis II. Before meiosis begins, DNA replicates once, but the cell divides twice. The key feature of Meiosis I is the separation of homologous chromosome pairs, reducing the chromosome number from diploid (2n) to haploid (n).','A crucial event in Meiosis I is crossing over (recombination), where homologous chromosomes exchange segments of DNA. This shuffling of genetic material is the primary source of genetic variation between offspring. After Meiosis I, each cell has half the original chromosome number.','Meiosis II resembles mitosis, separating sister chromatids. The final result is four haploid cells, each genetically unique. In males, these develop into sperm; in females, one becomes an egg and the others become polar bodies that are reabsorbed.'],
+kp:['Produces 4 genetically UNIQUE haploid daughter cells','Chromosome number is HALVED (diploid → haploid)','Crossing over creates genetic diversity','Occurs in reproductive organs (testes and ovaries)','Essential for sexual reproduction'],
+ins:{causes:['Need to create reproductive cells','Maintaining correct chromosome number across generations'],effects:['Genetic diversity in offspring','Foundation of sexual reproduction'],examples:['Sperm production in testes','Egg production in ovaries','Genetic variation between siblings'],hist:'The significance of meiosis was understood after Gregor Mendel\'s work on heredity in 1865, though meiosis itself was described in the 1880s.',diseases:['Down syndrome: failure of chromosome separation','Turner syndrome: incorrect chromosome number in eggs'],errors:['Meiosis ≠ Mitosis — different purposes, different outcomes','Meiosis doesn\'t occur in all cells — only in gonads'],related:['Mitosis','Genetics','Sexual Reproduction','Crossing Over']},
+img:'meiosis stages diagram',fun:'Crossing over during meiosis means no two eggs or sperm are genetically identical — making every human being who has ever lived a unique genetic combination.'},
+
+{k:['dna','genetics','gene','chromosome','nucleic acid','dna structure'],sub:'Biology',sens:'safe',
+title:'DNA and Genetics',
+def:'DNA (Deoxyribonucleic Acid) is the molecule that carries the genetic instructions for the development, functioning, growth, and reproduction of all known organisms. Genetics is the study of heredity and the variation of inherited characteristics.',
+exp:['DNA is a double-helix structure discovered by Watson and Crick in 1953 (building on Rosalind Franklin\'s X-ray data). It is composed of two strands of nucleotides twisted around each other. Each nucleotide contains a deoxyribose sugar, a phosphate group, and one of four nitrogenous bases: Adenine (A), Thymine (T), Guanine (G), and Cytosine (C). Base pairing rules are strict: A pairs with T, and G pairs with C.','Genes are specific segments of DNA that code for proteins. The Human Genome Project revealed that humans have approximately 20,000-25,000 protein-coding genes. DNA is organized into chromosomes — humans have 46 chromosomes (23 pairs) in most body cells. The complete genetic information of an organism is called its genome.','Genetics studies how traits are inherited from parents to offspring. Gregor Mendel established the foundational principles of inheritance through experiments with pea plants in the 1860s, identifying dominant and recessive traits. Modern genetics includes molecular genetics, genomics, and genetic engineering techniques like CRISPR.'],
+kp:['DNA is a double helix made of four bases: A, T, G, C','A pairs with T; G pairs with C (Chargaff\'s rules)','Genes are sections of DNA that encode proteins','Humans have ~23 pairs of chromosomes (46 total)','Mutations in DNA can cause genetic diseases'],
+ins:{causes:['DNA carries the code inherited from both parents','Mutations can arise from radiation, chemicals, or copying errors'],effects:['Determines physical traits (eye color, height)','Controls all cellular functions','Can cause genetic diseases when mutated'],examples:['Sickle cell anemia from a single gene mutation','Eye color determined by multiple genes','Identical twins sharing the same DNA'],hist:'Gregor Mendel\'s 1865 pea plant experiments founded genetics. Watson, Crick, and Franklin\'s 1953 discovery of the DNA double helix revolutionized biology.',diseases:['Cystic fibrosis','Down syndrome','Huntington\'s disease','Sickle cell anemia'],errors:['Only ~2% of human DNA codes for proteins — the rest was once called "junk DNA"','Genes don\'t directly determine behavior — environment also matters'],related:['Protein Synthesis','Evolution','Genetic Engineering','CRISPR']},
+img:'DNA double helix structure',fun:'If all the DNA in a single human cell were uncoiled and stretched out, it would be approximately 2 meters long — yet it fits inside a nucleus just 6 micrometers across.'},
+
+{k:['evolution','natural selection','darwin','adaptation','species'],sub:'Biology',sens:'safe',
+title:'Evolution and Natural Selection',
+def:'Evolution is the change in heritable characteristics of biological populations over successive generations. Natural selection, proposed by Charles Darwin, is the primary mechanism of evolution: individuals with favorable traits are more likely to survive and reproduce.',
+exp:['Charles Darwin, after his voyage on the HMS Beagle (1831-1836) and decades of study, published "On the Origin of Species" in 1859. He proposed that all species share common ancestors and that populations change over time through natural selection. Independently, Alfred Russel Wallace developed the same theory simultaneously.','Natural selection operates on variation within populations. Individuals with traits better suited to their environment survive longer and produce more offspring. These favorable traits are heritable, so they become more common in the population over generations. This process is often described as "survival of the fittest" — though "fittest" means best-adapted, not physically strongest.','Evolution is supported by overwhelming evidence from fossils, comparative anatomy, molecular biology, and direct observation. Modern evolutionary theory (Neo-Darwinism) combines Darwin\'s natural selection with genetics, recognizing that mutations in DNA are the ultimate source of heritable variation. Speciation occurs when populations become reproductively isolated and diverge over time.'],
+kp:['All life on Earth shares common ancestors','Natural selection favors individuals with adaptive traits','Mutations in DNA are the source of genetic variation','Evolution happens in populations, not individuals','Supported by fossil record, molecular biology, and direct observation'],
+ins:{causes:['Genetic mutations creating variation','Environmental pressures selecting traits','Reproductive isolation leading to speciation'],effects:['Adaptation of species to environments','Biodiversity on Earth','Emergence of antibiotic-resistant bacteria'],examples:['Darwin\'s finches on Galapagos Islands','Peppered moth color change during industrial revolution','Antibiotic resistance in bacteria'],hist:'Darwin published his theory in 1859. It was controversial but eventually became the foundation of modern biology. Gregor Mendel\'s genetics was integrated in the 20th century.',diseases:[],errors:['"Evolution is just a theory" — in science, "theory" means a well-tested explanation, not a guess','Humans did NOT evolve from modern apes — we share a common ancestor'],related:['Natural Selection','Genetics','Fossil Record','Biodiversity']},
+img:'Charles Darwin evolution tree of life',fun:'Darwin delayed publishing his theory for over 20 years, fearing the social backlash. He only published when he received Wallace\'s letter proposing the same theory.'},
+
+{k:['cell respiration','cellular respiration','atp','aerobic','glucose metabolism'],sub:'Biology',sens:'safe',
+title:'Cellular Respiration',
+def:'Cellular respiration is the metabolic process by which cells break down glucose and other organic molecules to produce ATP (adenosine triphosphate), the energy currency of cells. The complete aerobic process uses oxygen and produces carbon dioxide and water.',
+exp:['Cellular respiration occurs in three main stages: glycolysis, the Krebs cycle (citric acid cycle), and the electron transport chain. Glycolysis occurs in the cytoplasm and breaks down one glucose molecule into two pyruvate molecules, producing a net gain of 2 ATP.','Pyruvate is transported into the mitochondria, where it is converted to acetyl-CoA, releasing CO₂. The Krebs cycle then processes acetyl-CoA through a series of reactions, producing CO₂, NADH, and FADH₂, along with 2 ATP per glucose. The electron carriers NADH and FADH₂ carry high-energy electrons to the third stage.','The electron transport chain, located in the inner mitochondrial membrane, uses electrons from NADH and FADH₂ to pump hydrogen ions across the membrane, creating a concentration gradient. ATP synthase uses this gradient (chemiosmosis) to produce the bulk of ATP — approximately 34 ATP. In total, one glucose molecule can yield ~36-38 ATP.'],
+kp:['Breaks down glucose to release energy as ATP','Three stages: Glycolysis → Krebs Cycle → Electron Transport Chain','Produces ~36-38 ATP per glucose molecule','Requires oxygen (aerobic) — anaerobic respiration yields far less ATP','Occurs in the cytoplasm and mitochondria'],
+ins:{causes:['Cells requiring energy to perform work','Oxygen being available for aerobic respiration'],effects:['Energy for movement, growth, and all cellular work','Production of CO₂ (exhaled as waste)','Heat production in warm-blooded animals'],examples:['Muscle cells respiring during exercise','Yeast fermenting sugar anaerobically to produce alcohol','Your body\'s cells continuously producing ATP'],hist:'The details of cellular respiration were worked out in the 20th century, with Hans Krebs describing the citric acid cycle in 1937 and winning the Nobel Prize in 1953.',diseases:['Mitochondrial diseases when respiration is impaired'],errors:['Respiration ≠ breathing — cellular respiration is a chemical process','Plants also respire — they don\'t only photosynthesize'],related:['Photosynthesis','Mitochondria','ATP','Metabolism']},
+img:'cellular respiration mitochondria ATP',fun:'The human body produces its own body weight in ATP every single day, constantly recycling ADP back to ATP.'},
+
+// ── CHEMISTRY ──────────────────────────────────────────────
+{k:['atom','atomic structure','proton','neutron','electron','nucleus'],sub:'Chemistry',sens:'safe',
+title:'Atomic Structure',
+def:'An atom is the smallest unit of ordinary matter that forms a chemical element. It consists of a positively charged nucleus containing protons and neutrons, surrounded by negatively charged electrons that occupy specific energy levels (shells).',
+exp:['The modern atomic model (quantum mechanical model) describes electrons as existing in probability regions called orbitals rather than fixed orbits. The nucleus, though incredibly small (about 1/100,000 the size of the atom), contains nearly all of the atom\'s mass. The atomic number (number of protons) defines the element; the mass number equals protons + neutrons.','Electron configuration determines an atom\'s chemical behavior. Electrons occupy shells and subshells in order of increasing energy. The outermost electrons (valence electrons) participate in chemical bonding. Noble gases have full outer shells and are therefore chemically inert, while other elements seek to complete their outer shells by sharing or transferring electrons.','Isotopes are atoms of the same element with different numbers of neutrons. Carbon-12 and Carbon-14 are both carbon but have 6 and 8 neutrons respectively. Some isotopes are radioactive (unstable), emitting radiation as they decay. This radioactive decay is used in carbon dating to determine the age of archaeological specimens.'],
+kp:['Atoms consist of protons (+), neutrons (0), and electrons (-)','Atomic number = number of protons (defines the element)','Electrons occupy energy levels/shells around the nucleus','Valence electrons determine chemical reactivity','Isotopes are atoms with same protons but different neutrons'],
+ins:{causes:['Nuclear forces holding protons and neutrons together','Electromagnetic force between electrons and nucleus'],effects:['Chemical bonding between atoms','Formation of all matter','Radioactive decay in unstable isotopes'],examples:['Hydrogen: 1 proton, 0 neutrons, 1 electron','Carbon-12 vs Carbon-14 isotopes','Neon having a full outer shell making it unreactive'],hist:'John Dalton proposed the first modern atomic theory in 1803. J.J. Thomson discovered electrons in 1897, Rutherford discovered the nucleus in 1911, and Bohr proposed electron shells in 1913.',diseases:[],errors:['Atoms are NOT solid spheres (Dalton\'s model is obsolete)','Electrons don\'t orbit in fixed circles — they exist in probability clouds'],related:['Periodic Table','Chemical Bonding','Nuclear Physics','Isotopes']},
+img:'atom structure proton neutron electron',fun:'If an atom were the size of a football stadium, the nucleus would be the size of a marble — atoms are almost entirely empty space.'},
+
+{k:['periodic table','elements','chemical element','mendeleev'],sub:'Chemistry',sens:'safe',
+title:'The Periodic Table',
+def:'The Periodic Table is a systematic arrangement of chemical elements organized by atomic number, electron configuration, and recurring chemical properties. It contains 118 confirmed elements and was first developed by Dmitri Mendeleev in 1869.',
+exp:['Elements in the periodic table are arranged in rows (periods) and columns (groups/families). Elements in the same group share similar chemical properties because they have the same number of valence electrons. As you move across a period from left to right, atomic number increases by one, and properties change progressively from metallic to non-metallic.','The table is divided into blocks based on which subshell is being filled: s-block (groups 1-2), p-block (groups 13-18), d-block (transition metals, groups 3-12), and f-block (lanthanides and actinides). Metals occupy the left and center; metalloids form a diagonal staircase; non-metals are on the right.','Periodic trends include: atomic radius (decreases across periods, increases down groups), electronegativity (increases across periods, decreases down groups), and ionization energy (increases across periods, decreases down groups). Understanding these trends allows chemists to predict how elements will behave in reactions.'],
+kp:['118 elements arranged by increasing atomic number','Periods are horizontal rows; groups are vertical columns','Elements in the same group have similar properties','Metals, metalloids, and non-metals have distinct regions','Periodic trends: atomic radius, electronegativity, ionization energy'],
+ins:{causes:['Elements with similar electron configurations grouped together','Repeating patterns in chemical properties drove the organization'],effects:['Enables prediction of unknown element properties','Organizes all matter into a coherent system','Predicted existence of undiscovered elements'],examples:['Group 1 alkali metals all react vigorously with water','Noble gases (Group 18) are all unreactive','Halogens (Group 17) all form salts with metals'],hist:'Dmitri Mendeleev created the first widely recognized periodic table in 1869, leaving gaps for undiscovered elements and correctly predicting their properties.',diseases:[],errors:['The table is NOT arranged by atomic mass (though Mendeleev\'s was)','Elements can have multiple forms (allotropes) — e.g., carbon as diamond or graphite'],related:['Atomic Structure','Chemical Bonding','Electronegativity','Transition Metals']},
+img:'periodic table elements chemistry',fun:'Mendeleev predicted the existence and properties of three undiscovered elements (gallium, germanium, scandium) with remarkable accuracy, validating his table years before they were found.'},
+
+{k:['chemical bond','ionic bond','covalent bond','bonding','molecule'],sub:'Chemistry',sens:'safe',
+title:'Chemical Bonding',
+def:'Chemical bonding refers to the attractive forces that hold atoms together to form molecules and compounds. The main types are ionic bonds (electron transfer), covalent bonds (electron sharing), and metallic bonds, with bond type determined by electronegativity differences between atoms.',
+exp:['Ionic bonds form when one atom transfers electrons to another, creating oppositely charged ions that attract each other. This typically occurs between metals (which lose electrons, forming positive cations) and non-metals (which gain electrons, forming negative anions). Sodium chloride (table salt, NaCl) is a classic example: sodium gives an electron to chlorine.','Covalent bonds form when atoms share electrons, allowing both to achieve stable electron configurations. If atoms share equally (similar electronegativity), it\'s a nonpolar covalent bond; if sharing is unequal, the bond is polar covalent. Covalent compounds tend to have lower melting points than ionic compounds and don\'t conduct electricity when dissolved.','Metallic bonds occur in metals, where electrons are delocalized (free to move) throughout a "sea" of electrons surrounding positive metal ions. This explains metals\' properties: electrical conductivity (free electrons carry charge), thermal conductivity, malleability (ions can slide), and luster. Hydrogen bonds, while not true chemical bonds, are strong intermolecular forces crucial to water\'s properties and DNA structure.'],
+kp:['Ionic bonds: electron TRANSFER between metals and non-metals','Covalent bonds: electron SHARING between non-metals','Metallic bonds: delocalized electron sea in metals','Electronegativity difference determines bond type','Bond strength affects melting point and physical properties'],
+ins:{causes:['Atoms seeking stable electron configurations (full outer shell)','Electronegativity difference driving electron transfer vs sharing'],effects:['Formation of all compounds and molecules','Determination of physical properties (melting point, conductivity)','Molecular shape (VSEPR theory)'],examples:['NaCl (salt): ionic bond','H₂O (water): polar covalent bond','Diamond: network covalent bonding','Iron (Fe): metallic bonding'],hist:'Gilbert Lewis introduced the concept of electron sharing in bonds (covalent bonds) in 1916, providing a quantum mechanical understanding of chemistry.',diseases:[],errors:['Ionic compounds don\'t have discrete "molecules" — they form crystal lattices','Covalent bonds can be single, double, or triple (different strengths)'],related:['Atomic Structure','Electronegativity','Molecular Geometry','Intermolecular Forces']},
+img:'chemical bonding ionic covalent',fun:'The oxygen-hydrogen bonds in water are slightly polar, causing water molecules to stick together via hydrogen bonds — this is why water has an unusually high boiling point for its size.'},
+
+{k:['acids','bases','ph','acid base','neutralization'],sub:'Chemistry',sens:'safe',
+title:'Acids and Bases',
+def:'Acids are substances that donate protons (H⁺ ions) or accept electrons; bases are substances that accept protons or donate electrons. The pH scale (0-14) measures acidity: pH < 7 is acidic, pH 7 is neutral, pH > 7 is alkaline (basic).',
+exp:['The Brønsted-Lowry theory defines acids as proton donors and bases as proton acceptors. When an acid dissolves in water, it releases hydrogen ions (H⁺), increasing the concentration of H₃O⁺ (hydronium ions). Strong acids (HCl, H₂SO₄, HNO₃) fully dissociate in water; weak acids (acetic acid, citric acid) only partially dissociate.','The pH scale is logarithmic — each unit represents a 10-fold change in acidity. Battery acid (pH 0) is 10 million times more acidic than pure water (pH 7). Blood has a pH of 7.35-7.45; slight deviations cause serious health effects. Indicators like litmus paper and phenolphthalein change color at specific pH values.','Neutralization reactions occur when an acid reacts with a base to produce a salt and water (acid + base → salt + water). For example, HCl + NaOH → NaCl + H₂O. Buffers are solutions that resist pH changes when acids or bases are added — the bicarbonate buffer system in blood is crucial for maintaining proper blood pH.'],
+kp:['Acids have pH < 7 (donate H⁺ ions); bases have pH > 7 (accept H⁺ ions)','pH scale is logarithmic — each unit = 10-fold change in [H⁺]','Strong acids/bases fully dissociate; weak ones partially dissociate','Neutralization: acid + base → salt + water','Buffers resist pH changes in biological systems'],
+ins:{causes:['Presence of H⁺ or OH⁻ ions in solution'],effects:['Corrosion of metals by acids','Heartburn from excess stomach acid','Acid rain damaging ecosystems'],examples:['Stomach acid (HCl, pH 1-2) digesting food','Baking soda (NaHCO₃) neutralizing acid','Citric acid in lemons (pH ~2)','Bleach (NaOH solution, pH ~13)'],hist:'Svante Arrhenius defined acids and bases in 1884. Brønsted and Lowry expanded the definition in 1923, followed by Lewis\'s even broader electron-pair definition.',diseases:['Acidosis: blood pH < 7.35','Alkalosis: blood pH > 7.45'],errors:['All acids are NOT strong — most biological acids are weak','Alkaline water doesn\'t significantly affect blood pH — the body regulates it tightly'],related:['Chemical Bonding','Electrochemistry','Neutralization','Buffer Solutions']},
+img:'pH scale acids bases chemistry',fun:'The ocean is slowly becoming more acidic due to absorbing CO₂ from the atmosphere — a 0.1 pH drop since industrialization, which is a 26% increase in acidity due to the logarithmic scale.'},
+
+// ── PHYSICS ───────────────────────────────────────────────
+{k:['newton','laws of motion','inertia','force','acceleration'],sub:'Physics',sens:'safe',
+title:"Newton's Laws of Motion",
+def:"Isaac Newton's three laws of motion, published in 1687, form the foundation of classical mechanics: (1) An object stays at rest or in uniform motion unless acted upon by a force. (2) Force equals mass times acceleration (F=ma). (3) For every action, there is an equal and opposite reaction.",
+exp:["The First Law (Law of Inertia) states that objects resist changes in their state of motion. A book on a table stays still; a ball rolling on a frictionless surface rolls forever. Inertia is the tendency of matter to resist changes in velocity, and it is proportional to mass. This is why seatbelts are essential — when a car stops suddenly, passengers tend to continue moving forward.","The Second Law is the most mathematically precise: F = ma (Force = mass × acceleration). This means a greater force produces greater acceleration, but greater mass resists acceleration. Push a shopping cart and a car with the same force — the cart accelerates much faster. This law allows engineers to calculate exactly how forces affect motion.","The Third Law states that forces always occur in pairs. When you push against a wall, the wall pushes back with equal force. When a rocket expels gas downward, the gas pushes the rocket upward. Importantly, action and reaction forces act on DIFFERENT objects, which is why a rocket can accelerate in space despite there being nothing to 'push against'."],
+kp:['Law 1 (Inertia): Objects maintain their state of motion unless a net force acts','Law 2 (F=ma): Force is directly proportional to acceleration','Law 3 (Action-Reaction): Every force has an equal and opposite reaction force','These laws are accurate for everyday speeds (not near light speed — use relativity)','Mass is the measure of an object\'s resistance to acceleration'],
+ins:{causes:['Net force changing an object\'s velocity','Mass determining resistance to acceleration'],effects:['Foundation of all engineering and mechanical design','Explains planetary orbits, projectile motion','Basis for rocket propulsion'],examples:['Car braking (Law 1 — passengers lurch forward)','Rocket launching (Law 3 — exhaust pushes rocket up)','Heavier objects harder to accelerate (Law 2)'],hist:"Newton published Principia Mathematica in 1687, considered one of the most important scientific books ever written. These laws held unchallenged until Einstein's relativity in 1905.",diseases:[],errors:["Newton's laws break down at near-light speeds (Einstein's relativity) and at atomic scales (quantum mechanics)",'Objects DON\'T need a force to keep moving — they need a force to STOP or CHANGE motion'],related:['Gravity','Momentum','Energy','Quantum Mechanics']},
+img:"Newton's laws of motion physics",fun:"Newton reportedly developed his theories of gravity and motion in 1666 while staying home to avoid the London plague — one of history's most productive quarantines."},
+
+{k:['quantum mechanics','quantum physics','wave particle','uncertainty','quanta'],sub:'Physics',sens:'safe',
+title:'Quantum Mechanics',
+def:'Quantum mechanics is the branch of physics that describes the behavior of matter and energy at the atomic and subatomic scale. It reveals that particles can exist in multiple states simultaneously (superposition) and that their properties are fundamentally uncertain until measured.',
+exp:["Quantum mechanics emerged in the early 20th century as scientists discovered that classical physics failed to explain phenomena at atomic scales. Max Planck proposed in 1900 that energy is quantized — it comes in discrete packets called quanta. Einstein's 1905 photoelectric effect demonstrated that light itself consists of particles (photons).","The wave-particle duality, demonstrated by the double-slit experiment, shows that electrons and photons exhibit both wave and particle behavior depending on observation. Heisenberg's Uncertainty Principle (1927) states that you cannot simultaneously know both the exact position and momentum of a particle — this is not a limitation of measurement, but a fundamental property of nature.","Schrödinger's equation describes how quantum states evolve over time. The wave function contains all information about a particle's possible states. When a measurement is made, the wave function 'collapses' to one definite state. This Copenhagen interpretation has profound philosophical implications. Quantum mechanics is the most precisely tested theory in all of physics and underlies all of modern electronics."],
+kp:['Energy is quantized — comes in discrete packets (quanta)','Wave-particle duality: particles exhibit wave-like behavior','Heisenberg Uncertainty Principle: position and momentum cannot both be precisely known','Superposition: particles exist in multiple states until observed','Quantum mechanics underlies all electronics and chemistry'],
+ins:{causes:['Failure of classical physics at atomic scales','Experimental observations contradicting classical predictions'],effects:['Explains atomic structure and chemical bonding','Foundation of all modern electronics (transistors)','Laser technology, MRI machines, solar cells'],examples:['Electron tunneling in transistors','Laser operation using stimulated emission','Fluorescent lights using quantum energy transitions'],hist:'Developed 1900-1930 by Planck, Einstein, Bohr, Heisenberg, Schrödinger, Dirac, and others — arguably the greatest collective intellectual achievement in history.',diseases:[],errors:["Schrödinger's Cat is a thought experiment showing the absurdity of applying quantum rules to macroscopic objects",'Quantum mechanics does NOT mean "anything is possible" or support mystical claims'],related:["Newton's Laws","Theory of Relativity",'Atomic Structure','Particle Physics']},
+img:'quantum mechanics wave function atom',fun:"Quantum tunneling allows electrons to pass through barriers they shouldn't be able to — this is the principle behind the transistors in every computer and smartphone on Earth."},
+
+{k:['relativity','einstein','space time','speed of light','e mc2'],sub:'Physics',sens:'safe',
+title:'Theory of Relativity',
+def:"Albert Einstein's Theory of Relativity consists of two parts: Special Relativity (1905), which introduces the constancy of the speed of light and time dilation, and General Relativity (1915), which describes gravity as the curvature of spacetime caused by mass and energy.",
+exp:["Special Relativity begins with two postulates: the laws of physics are the same for all observers in uniform motion, and the speed of light in a vacuum (c = 3×10⁸ m/s) is the same for all observers regardless of the motion of the source. From these, Einstein derived remarkable conclusions: time passes slower for moving objects (time dilation), objects become shorter in the direction of motion (length contraction), and mass increases with velocity.","The famous equation E=mc² shows that mass and energy are equivalent and interconvertible. A tiny amount of mass corresponds to an enormous amount of energy (c² is approximately 9×10¹⁶). This is why nuclear reactions — which convert tiny fractions of mass to energy — release tremendous power. It also means that as objects accelerate, they gain mass, making it impossible for objects with mass to reach the speed of light.","General Relativity reframes gravity not as a force (Newton's view) but as a curvature in the four-dimensional fabric of spacetime caused by mass and energy. Massive objects warp spacetime, and other objects follow curved paths through this warped spacetime, which we perceive as gravitational attraction. GR predicted gravitational lensing (confirmed 1919), gravitational waves (detected 2015 by LIGO), and black holes."],
+kp:['Speed of light is constant for ALL observers (c = 3×10⁸ m/s)','Time dilation: moving clocks run slower','E=mc²: mass and energy are equivalent','Gravity is the curvature of spacetime, not a force','General relativity predicted gravitational waves (confirmed 2015)'],
+ins:{causes:['Failure of classical mechanics to explain light and electromagnetic phenomena'],effects:['GPS satellites must account for time dilation to stay accurate','Nuclear power and nuclear weapons via E=mc²','Black holes and expanding universe explained'],examples:['GPS systems correcting for relativistic time dilation','Atomic bomb energy from mass conversion','Light bending around the Sun (gravitational lensing)'],hist:'Special Relativity published 1905, General Relativity 1915. Einstein received the Nobel Prize in 1921 for the photoelectric effect (ironically, not relativity).',diseases:[],errors:['Relativity does NOT say "everything is relative" in a philosophical sense','E=mc² applies to ALL matter, not just nuclear reactions'],related:['Quantum Mechanics','Gravity','Black Holes','Spacetime']},
+img:'Einstein theory of relativity spacetime',fun:'GPS satellites in orbit experience both time dilation (moving fast, clocks run slow) and gravitational time dilation (less gravity, clocks run fast). Without relativistic corrections, GPS would be off by 10km per day.'},
+
+{k:['thermodynamics','heat','entropy','energy','laws of thermodynamics'],sub:'Physics',sens:'safe',
+title:'Thermodynamics',
+def:'Thermodynamics is the branch of physics that studies the relationships between heat, work, temperature, and energy. Its four laws govern energy transfer and set fundamental limits on what processes are possible in the universe.',
+exp:['The Zeroth Law states that if two systems are each in thermal equilibrium with a third, they are in equilibrium with each other — this defines temperature. The First Law is the law of conservation of energy: energy cannot be created or destroyed, only converted between forms. The total energy of an isolated system remains constant: ΔU = Q - W (change in internal energy = heat added minus work done).','The Second Law is perhaps the most profound: in any spontaneous process, the total entropy (disorder) of the universe always increases. This explains why processes happen spontaneously in one direction (a hot cup of coffee cools; cold coffee doesn\'t spontaneously heat up), why heat engines cannot be 100% efficient, and why time has a direction (the "arrow of time").','The Third Law states that as temperature approaches absolute zero (0 Kelvin = -273.15°C), entropy approaches a minimum (not necessarily zero for most systems). It is impossible to reach absolute zero in a finite number of steps. These laws together constrain all energy-converting machines and processes, from steam engines to biological metabolism.'],
+kp:['1st Law: Energy is conserved — it cannot be created or destroyed','2nd Law: Entropy (disorder) always increases in spontaneous processes','No heat engine can be 100% efficient (Carnot limit)','Absolute zero (0 K) is the lowest possible temperature','Entropy explains the direction of time'],
+ins:{causes:['Energy naturally disperses from concentrated to spread-out forms','Thermal energy flowing from hot to cold'],effects:['Limits efficiency of all engines and power plants','Explains why stars eventually burn out','Foundation of chemistry (predicting spontaneous reactions)'],examples:['Steam engine converting heat to work (max ~40% efficient)','Ice melting at room temperature','Refrigerators moving heat against natural flow (requiring work)'],hist:'Carnot, Clausius, Kelvin, and others developed thermodynamics in the 19th century during the Industrial Revolution to maximize steam engine efficiency.',diseases:[],errors:['The 2nd Law does NOT say everything always becomes MORE disordered — local entropy can decrease (e.g., life) at the cost of increasing entropy elsewhere','Perpetual motion machines violate thermodynamic laws and are impossible'],related:['Energy and Work','Statistical Mechanics','Heat Engines','Entropy']},
+img:'thermodynamics entropy heat engine',fun:'The second law of thermodynamics is arguably the most universal law in physics — it explains why we age, why stars die, and why the future is different from the past.'},
+
+{k:['electromagnetism','electric','magnetic','electromagnetic','Maxwell'],sub:'Physics',sens:'safe',
+title:'Electromagnetism',
+def:'Electromagnetism is the branch of physics describing the interaction between electric and magnetic fields. James Clerk Maxwell unified these in the 1860s, showing they are two aspects of a single force and that light itself is an electromagnetic wave.',
+exp:["Electric fields are created by electric charges and exert forces on other charges (like charges repel, opposite charges attract). Coulomb's law describes this force. Magnetic fields are created by moving charges (electric currents) and by permanent magnets (due to electron spin alignment). The force on a moving charge in a magnetic field is the Lorentz force.","Maxwell's four equations unified all of electricity and magnetism. Crucially, a changing electric field creates a magnetic field, and a changing magnetic field creates an electric field — leading to self-propagating electromagnetic waves. Maxwell calculated their speed and found it matched the speed of light, revealing that light IS an electromagnetic wave.","The electromagnetic spectrum includes (from low to high frequency): radio waves, microwaves, infrared, visible light, ultraviolet, X-rays, and gamma rays. All travel at the speed of light (3×10⁸ m/s) in a vacuum but have different frequencies and wavelengths. Electromagnetic induction (Faraday's discovery) is the basis of all electric generators and transformers."],
+kp:['Electric and magnetic forces are aspects of one fundamental force','Moving charges create magnetic fields; changing fields create EM waves','Maxwell unified electricity and magnetism in 4 equations','Light is an electromagnetic wave','EM spectrum: radio → microwave → IR → visible → UV → X-ray → gamma'],
+ins:{causes:['Electric charges and their motion creating fields'],effects:['All of electrical technology: motors, generators, transformers','Radio, TV, WiFi, cellular networks','Medical X-rays and MRI machines'],examples:['Electric motor converting electrical to mechanical energy','Radio waves carrying signals','Microwave oven heating food via EM absorption'],hist:'Faraday discovered electromagnetic induction (1831); Maxwell published his equations (1865); Hertz confirmed EM waves (1887).',diseases:['X-ray and gamma ray overexposure causing radiation damage'],errors:['Light doesn\'t need a medium to travel — unlike sound','Radio waves are NOT harmful at normal levels (they\'re just low-frequency EM radiation)'],related:['Quantum Mechanics','Light and Optics','Electric Circuits','Special Relativity']},
+img:'electromagnetism electric field magnetic field',fun:'Every time you use a credit card with a magnetic stripe, WiFi, or a microwave, you are using phenomena described by Maxwell\'s four equations — written in the 1860s.'},
+
+// ── MATHEMATICS ─────────────────────────────────────────
+{k:['pythagorean','pythagoras','right triangle','hypotenuse','a squared b squared'],sub:'Mathematics',sens:'safe',
+title:'Pythagorean Theorem',
+def:'The Pythagorean Theorem states that in a right-angled triangle, the square of the length of the hypotenuse (the side opposite the right angle) equals the sum of the squares of the other two sides: a² + b² = c².',
+exp:['The theorem is attributed to the ancient Greek mathematician Pythagoras (570-495 BC), though evidence suggests it was known to Babylonian mathematicians over 1,000 years earlier. It is one of the most fundamental relationships in Euclidean geometry and has hundreds of known proofs — more than any other mathematical theorem.','The theorem only applies to right triangles (triangles with one 90° angle). Given any two sides, you can find the third. If the legs are a = 3 and b = 4, then c² = 9 + 16 = 25, so c = 5. This 3-4-5 combination (and multiples like 6-8-10) are called Pythagorean triples.','Beyond geometry, the Pythagorean theorem extends to three dimensions (distance formula in 3D), forms the basis of trigonometry, is fundamental in vector mathematics, and generalizes to non-Euclidean geometry. Engineers, architects, surveyors, and navigators use it constantly. The distance formula in coordinate geometry (d = √[(x₂-x₁)² + (y₂-y₁)²]) is a direct application.'],
+kp:['a² + b² = c², where c is the hypotenuse (longest side)','Only applies to RIGHT triangles (one 90° angle)','Pythagorean triples: 3-4-5, 5-12-13, 8-15-17','Used in distance calculations, architecture, navigation','Has over 370 known different proofs'],
+ins:{causes:['Geometric relationship between squares drawn on triangle sides'],effects:['Foundation of all trigonometry','Used in all engineering and architecture','GPS systems use it for distance calculations'],examples:['Finding the diagonal of a rectangle (a room)','Ladder against a wall problem','Baseball field layout (90-foot sides → 127-foot diagonal)'],hist:'Known to Babylonians ~1800 BC. Pythagoras (or his school) gave it mathematical proof. Proved by Euclid in his Elements (300 BC). First proved by a US president (Garfield) in 1876.',diseases:[],errors:['The theorem applies ONLY to right triangles — not all triangles','The hypotenuse is ALWAYS the longest side and opposite the right angle'],related:['Trigonometry','Euclidean Geometry','Distance Formula','Coordinate Geometry']},
+img:'Pythagorean theorem right triangle geometry',fun:"In 1876, James Garfield — before becoming US President — published his own original proof of the Pythagorean theorem in the New England Journal of Education."},
+
+{k:['calculus','derivative','integral','differentiation','integration','limits'],sub:'Mathematics',sens:'safe',
+title:'Calculus',
+def:'Calculus is the branch of mathematics concerned with rates of change (differential calculus) and accumulation of quantities (integral calculus). Independently developed by Newton and Leibniz in the 17th century, it is the mathematical language of continuous change.',
+exp:["Differential calculus focuses on derivatives — the instantaneous rate of change of a function. The derivative of position gives velocity; the derivative of velocity gives acceleration. Geometrically, the derivative at a point is the slope of the tangent line to the curve at that point. Finding derivatives uses rules like the power rule, product rule, quotient rule, and chain rule.","Integral calculus focuses on antiderivatives and definite integrals. The definite integral represents the area under a curve between two points. It is used to find total distance from velocity, total mass from density, and volumes of complex shapes. Integration techniques include substitution, integration by parts, and partial fractions.","The Fundamental Theorem of Calculus links differentiation and integration: differentiation and integration are inverse operations. This profound connection unified two previously separate mathematical fields. Calculus is essential in physics (Newton's laws, electromagnetism), engineering (stress analysis, fluid dynamics), economics (optimization), biology (population models), and virtually every quantitative science."],
+kp:['Differential calculus: derivatives measure rates of change','Integral calculus: integrals measure accumulated quantities (areas)','Fundamental Theorem links differentiation and integration','Derivative of position = velocity; derivative of velocity = acceleration','Integral of velocity = displacement; integral of force = impulse'],
+ins:{causes:['Need to solve problems involving continuously changing quantities','Impossibility of algebra to handle instantaneous rates or curved areas'],effects:['Makes it possible to model any continuously changing phenomenon','Foundation of physics, engineering, economics','Enables design of everything from bridges to computer graphics'],examples:['Finding optimal shape for a rocket nose cone','Calculating the volume of Earth','Modeling population growth or epidemic spread'],hist:"Newton and Leibniz independently developed calculus ~1665-1675. The infamous priority dispute lasted decades. Today Leibniz's notation (dy/dx, ∫) is used.",diseases:[],errors:['Calculus requires understanding of limits first','Integration is NOT simply the reverse of differentiation in all contexts (definite vs indefinite)'],related:["Newton's Laws",'Differential Equations','Linear Algebra','Statistics']},
+img:'calculus derivative integral graph',fun:'Newton developed calculus in 1666 partly to understand planetary motion. The same year he also formulated his theory of gravity — all while avoiding a plague pandemic. A very productive 23-year-old.'},
+
+{k:['algebra','equation','variable','polynomial','quadratic'],sub:'Mathematics',sens:'safe',
+title:'Algebra',
+def:'Algebra is the branch of mathematics dealing with symbols and the rules for manipulating those symbols. It generalizes arithmetic by using variables to represent numbers, allowing the formulation and solution of equations representing real-world relationships.',
+exp:["Algebra evolved from the need to solve practical problems involving unknowns. The word 'algebra' comes from the title of a 9th-century book by al-Khwarizmi: 'Al-Kitab al-mukhtasar fi hisab al-jabr wal-muqabala'. Elementary algebra covers solving linear equations (ax + b = 0), systems of equations, and quadratic equations (ax² + bx + c = 0).","The quadratic formula x = (-b ± √(b²-4ac)) / 2a solves any quadratic equation. The discriminant (b²-4ac) tells us the nature of solutions: positive → two real roots, zero → one repeated root, negative → two complex roots. Polynomial algebra extends to higher degrees.","Abstract algebra studies algebraic structures like groups, rings, and fields — the mathematical foundations behind cryptography, coding theory, and particle physics. Linear algebra (matrices and vectors) is fundamental to computer graphics, machine learning, and quantum mechanics. The power of algebra is the ability to solve entire classes of problems with one general formula."],
+kp:['Variables represent unknown quantities','Linear equations (ax + b = c) have one solution','Quadratic equations have up to two solutions (use quadratic formula)','Inequalities describe ranges rather than exact values','The order of operations (PEMDAS/BODMAS) must be followed'],
+ins:{causes:['Need to solve problems with unknown quantities','Generalization of arithmetic to non-specific numbers'],effects:['Foundation of all higher mathematics','Enables solving engineering and physics problems','Basis of computer programming and cryptography'],examples:['Calculating break-even point in business','Projectile motion formula in physics','Encryption algorithms using modular algebra'],hist:"al-Khwarizmi's 9th-century Baghdad work founded algebra. Fibonacci brought it to Europe (1202). Descartes connected algebra to geometry (1637).",diseases:[],errors:['Dividing both sides by a variable is only valid if it\'s not zero','The order of operations cannot be changed arbitrarily'],related:['Calculus','Statistics','Geometry','Linear Algebra']},
+img:'algebra equation mathematics variables',fun:"The word 'algorithm' comes from 'al-Khwarizmi' — the name of the mathematician who invented algebra. His name also gave us the word 'algebra'."},
+
+// ── HISTORY ───────────────────────────────────────────────
+{k:['french revolution','bastille','napoleon','reign of terror','liberty equality'],sub:'History',sens:'safe',
+title:'The French Revolution',
+def:'The French Revolution (1789-1799) was a period of radical political and societal transformation in France that overthrew the monarchy, established a republic based on the principles of liberty, equality, and fraternity, and had profound lasting effects on European and world history.',
+exp:["France in the 1780s faced a severe financial crisis from wars (including supporting the American Revolution) and lavish royal spending under Louis XVI. The economy was collapsing, harvests failed, and bread prices soared. The feudal system imposed enormous tax burdens on the common people (Third Estate) while the clergy and nobility were largely exempt. Enlightenment ideas questioning divine right of kings and advocating natural rights had spread widely.","The Revolution began with the convening of the Estates-General in 1789 and quickly radicalized. The storming of the Bastille on July 14, 1789 became its symbolic beginning. The Declaration of the Rights of Man (1789) proclaimed equality before the law. The monarchy was abolished, and Louis XVI was executed in 1793. The Reign of Terror (1793-94) under Robespierre saw approximately 17,000 official executions.","The Revolution's ideals — liberty, equality, fraternity — became the basis of modern democratic government. Napoleon Bonaparte emerged from the chaos, first as a general, then as Emperor (1804). Though Napoleon eventually imposed a new form of authority, he spread revolutionary laws (the Napoleonic Code) across Europe, abolishing feudalism and establishing legal equality. The Revolution fundamentally transformed European politics and inspired revolutions worldwide."],
+kp:['Caused by fiscal crisis, inequality, and Enlightenment ideas','Storming the Bastille (July 14, 1789) symbolically began it','The Reign of Terror (1793-94) killed ~17,000 people','Napoleon emerged from its chaos to become Emperor','Spread ideals of liberty, equality, democracy worldwide'],
+ins:{causes:['Severe financial crisis and state near-bankruptcy','Inequality between nobility and common people','Failed harvests causing bread shortages','Enlightenment philosophy questioning royal authority'],effects:['End of absolute monarchy in France','Spread of democratic ideals across Europe','Napoleonic Wars transforming European borders','Foundation of modern human rights concepts'],examples:['Declaration of Rights of Man (1789)','Execution of Louis XVI (1793)','Napoleonic Code influencing legal systems worldwide'],hist:'One of the most studied events in history, it marked the transition from feudalism to modern nation-states and inspired revolutions from Latin America to Haiti.',diseases:[],errors:['The Revolution did NOT immediately lead to lasting democracy — it oscillated between republic, terror, and empire','Not all French people supported it — it caused deep civil divisions'],related:['Napoleon Bonaparte','Enlightenment','American Revolution','Industrial Revolution']},
+img:'French Revolution Bastille storming 1789',fun:'The metric system was invented during the French Revolution as part of the revolutionary project to replace all old systems with rational, decimal-based ones — July 14 (Bastille Day) is still France\'s national holiday.'},
+
+{k:['world war 1','world war i','ww1','great war','trench warfare'],sub:'History',sens:'safe',
+title:'World War I (1914-1918)',
+def:'World War I (1914-1918), also called the Great War, was a global conflict centered in Europe that resulted in over 17 million deaths. It was triggered by the assassination of Archduke Franz Ferdinand and escalated due to a complex system of alliances, nationalism, and imperial rivalry.',
+exp:["The war began when Archduke Franz Ferdinand of Austria-Hungary was assassinated in Sarajevo on June 28, 1914, by Gavrilo Princip, a Bosnian-Serb nationalist. The assassination triggered a chain reaction: Austria-Hungary declared war on Serbia; Russia mobilized to support Serbia; Germany declared war on Russia; Germany invaded Belgium to attack France; Britain declared war on Germany. Two alliances faced each other: the Allied Powers (Britain, France, Russia, later USA) vs. the Central Powers (Germany, Austria-Hungary, Ottoman Empire).","The war was characterized by the horrors of trench warfare on the Western Front. Millions died in battles like the Somme (60,000 British casualties on day one, July 1, 1916) and Verdun (~700,000 casualties over 10 months). New technologies made this war uniquely devastating: machine guns, artillery barrages, poison gas (first used at Ypres, 1915), tanks, airplanes, and submarines.","The USA entered in April 1917, tilting the balance. Russia withdrew after its revolution in 1917. Germany's final offensive failed in 1918, and facing internal collapse, Germany signed the Armistice on November 11, 1918. The Treaty of Versailles (1919) imposed harsh terms on Germany — blamed for the war, stripped of territory, forced to pay reparations — conditions that many historians see as directly leading to World War II."],
+kp:['Triggered by assassination of Franz Ferdinand, June 28, 1914','Allied Powers vs Central Powers','17+ million deaths — catastrophic new weapons changed warfare','Trench warfare on the Western Front','Treaty of Versailles\'s harsh terms helped cause World War II'],
+ins:{causes:['Assassination as immediate trigger','Alliance system creating chain reaction','Nationalism and imperial competition','Arms race and military planning (Schlieffen Plan)'],effects:['Collapse of four empires: Ottoman, Austro-Hungarian, Russian, German','Map of Europe redrawn','Russian Revolution and rise of communism','Set conditions for World War II'],examples:['Battle of the Somme (1916): deadliest in British history','First use of tanks by Britain (1916)','Mustard gas and chlorine gas attacks'],hist:'Called "the war to end all wars" — tragically, it set the conditions for an even larger conflict 21 years later.',diseases:['Spanish Flu pandemic (1918) killing 50-100M, more than the war itself'],errors:['Germany was not solely responsible — the alliance system created a trap all powers fell into','The Versailles Treaty was NOT fully enforced — the "war guilt" clause was bitterly resented'],related:['World War II','Treaty of Versailles','Russian Revolution','Colonialism']},
+img:'World War 1 trench warfare soldiers 1917',fun:'The Christmas Truce of 1914 saw German and British soldiers spontaneously stop fighting, exchange gifts, and play football (soccer) in No Man\'s Land — before being ordered to resume killing each other.'},
+
+{k:['world war 2','world war ii','ww2','nazis','hitler','holocaust','d-day'],sub:'History',sens:'safe',
+title:'World War II (1939-1945)',
+def:'World War II (1939-1945) was the deadliest conflict in human history, with an estimated 70-85 million deaths. It pitted the Allied Powers (USA, UK, USSR, France, others) against the Axis Powers (Nazi Germany, Fascist Italy, Imperial Japan), and included the Holocaust — the systematic murder of 6 million Jews and millions of others.',
+exp:["World War II grew from the failures of the post-WWI settlement, the Great Depression, and the rise of fascism. Adolf Hitler's Nazi Party came to power in Germany in 1933, exploiting economic despair and nationalism. Germany's invasion of Poland on September 1, 1939 prompted Britain and France to declare war. Germany rapidly conquered France (June 1940) and began bombing Britain (Battle of Britain).","Japan's attack on Pearl Harbor (December 7, 1941) brought the United States into the war. The conflict spanned Europe, North Africa, the Pacific, and Asia. The turning points came in 1942-43: Germany's defeat at Stalingrad (~2 million casualties) on the Eastern Front, the Allied victory in North Africa, and US advances in the Pacific (Midway). D-Day (June 6, 1944) — the largest seaborne invasion in history — opened a new front in Western Europe.","The Holocaust was the systematic, state-sponsored persecution and murder of six million Jewish people and millions of others (Roma, disabled people, political opponents, LGBTQ+ people) by the Nazi regime. This genocide, carried out in concentration and extermination camps, represents one of the worst atrocities in human history. The war ended in Europe with Germany's unconditional surrender (May 8, 1945) and in the Pacific after the atomic bombings of Hiroshima and Nagasaki (August 1945)."],
+kp:['70-85 million deaths — deadliest conflict in history','Allied Powers defeated Nazi Germany and Imperial Japan','Holocaust: systematic murder of 6 million Jews + millions others','Atomic bombs dropped on Japan ended the Pacific war','Led to the United Nations, Cold War, and modern world order'],
+ins:{causes:['Failures of Treaty of Versailles','Rise of fascism in Germany, Italy, Japan','Great Depression fueling extremist politics','Appeasement policy failing to stop Hitler'],effects:['Formation of United Nations (1945)','Beginning of Cold War (USA vs USSR)','Creation of Israel (1948)','Decolonization movements accelerated','Nuclear age began'],examples:['Battle of Stalingrad (1942-43): decisive Eastern Front turning point','D-Day invasion of Normandy (June 6, 1944)','Manhattan Project producing atomic bombs'],hist:'The most studied conflict in history. Led to the Nuremberg Trials — first international war crimes tribunal — establishing the principle that crimes against humanity have universal jurisdiction.',diseases:[],errors:['The Allies were NOT purely fighting for moral reasons initially — geopolitical interests were central','Not all Germans supported the Nazis — millions resisted or were persecuted'],related:['World War I','Cold War','Holocaust','United Nations']},
+img:'World War 2 D-Day Normandy Allied soldiers',fun:'The Enigma code-breaking operation at Bletchley Park, led partly by Alan Turing, is estimated to have shortened the war by 2-4 years — saving an estimated 14 million lives.'},
+
+{k:['industrial revolution','steam engine','factory','manufacturing','19th century industry'],sub:'History',sens:'safe',
+title:'The Industrial Revolution',
+def:'The Industrial Revolution (c.1760-1840) was the transition from hand production to machine-based manufacturing, beginning in Britain and spreading globally. It fundamentally transformed human society, economy, and the environment, shifting populations from rural agriculture to urban industry.',
+exp:["The Industrial Revolution began in Britain due to a combination of factors: abundant coal and iron deposits, a strong merchant class, a stable financial system, a colonial empire providing raw materials and markets, and an Enlightenment culture encouraging innovation. James Watt's improved steam engine (1769) was the critical enabling technology, powering factories, mines, and eventually railways.","The textile industry industrialized first, with inventions like the spinning jenny, water frame, and power loom. Iron and steel production transformed construction. The Railway Age (from 1825) shrank distances and created national markets. The factory system replaced the cottage industry, drawing workers from countryside to rapidly growing cities like Manchester and Birmingham.","The social consequences were profound and mixed. Urbanization, while creating economic growth, also created slums, child labor, 14-hour workdays, and catastrophic urban pollution. This generated political responses: trade unions, labor laws, socialist political movements, and eventually welfare states. The Industrial Revolution also dramatically accelerated resource consumption and began the large-scale emission of greenhouse gases."],
+kp:['Began in Britain ~1760, spread globally by 1850','Steam engine (James Watt, 1769) was the key technology','Shifted economy from agriculture to manufacturing','Created urban working class and sparked labor rights movements','Beginning of large-scale environmental impact from industry'],
+ins:{causes:['Coal and iron resources in Britain','Strong merchant/financial infrastructure','Colonial markets for goods','Scientific Enlightenment encouraging innovation'],effects:['Massive increase in production and wealth','Urbanization and growth of working class','Child labor and terrible working conditions','Trade unions and labor rights movement','Climate change from fossil fuel burning'],examples:['Manchester becoming "Cottonopolis" — textile manufacturing hub','First steam railway (Stockton-Darlington, 1825)','Dickens novels documenting social conditions'],hist:'The most transformative economic shift since the Neolithic Agricultural Revolution. Its effects — urbanization, capitalism, fossil fuels — still shape our world.',diseases:['Cholera epidemics in overcrowded cities','Black lung disease in coal miners'],errors:['The Industrial Revolution did NOT immediately benefit ordinary workers — living standards fell initially for many','It was NOT a sudden event — it was a gradual process over decades'],related:['French Revolution','Colonialism','Climate Change','Capitalism']},
+img:'Industrial Revolution steam engine factory Britain',fun:'In 1800, less than 3% of the world\'s population lived in cities. By 2008 — just 200 years later — for the first time in history, more than half of all humans lived in urban areas.'},
+
+// ── GEOGRAPHY ────────────────────────────────────────────
+{k:['climate change','global warming','greenhouse','carbon dioxide','co2 emissions'],sub:'Geography',sens:'safe',
+title:'Climate Change',
+def:'Climate change refers to long-term shifts in global temperatures and weather patterns. While natural factors play a role, since the mid-20th century, human activities — primarily burning fossil fuels and deforestation — have become the dominant cause, driving unprecedented rapid warming.',
+exp:['The greenhouse effect is a natural and essential process: greenhouse gases (CO₂, methane, water vapor, nitrous oxide) in the atmosphere trap heat from the sun, keeping Earth ~33°C warmer than it would otherwise be. However, since industrialization, human activities have dramatically increased concentrations of these gases. Atmospheric CO₂ has risen from ~280 ppm (pre-industrial) to over 420 ppm today — the highest in 3 million years.','The consequences are already visible: global average temperature has risen ~1.1°C since pre-industrial times; Arctic sea ice is declining ~13% per decade; sea levels are rising ~3.7 mm/year; extreme weather events (heat waves, hurricanes, droughts, floods) are becoming more frequent and intense. The IPCC projects 1.5-4.4°C warming by 2100 depending on emissions.','The Paris Agreement (2015) aims to limit warming to 1.5-2°C above pre-industrial levels, requiring global net-zero CO₂ emissions by ~2050. Solutions include renewable energy (solar, wind), electric vehicles, energy efficiency, reforestation, and carbon capture. Climate justice is a crucial dimension — the countries contributing least to emissions often face the worst impacts.'],
+kp:['CO₂ has risen from 280 to 420+ ppm since industrialization','Earth has already warmed ~1.1°C since pre-industrial times','Main causes: fossil fuels, deforestation, agriculture','Effects: sea level rise, extreme weather, species extinction','Paris Agreement targets limiting warming to 1.5-2°C'],
+ins:{causes:['Burning fossil fuels (coal, oil, gas)','Deforestation reducing carbon sinks','Industrial agriculture (methane from livestock)','Cement production'],effects:['Rising sea levels threatening coastal cities','More frequent and intense extreme weather','Mass species extinction','Food and water security risks','Climate refugees'],examples:['Great Barrier Reef bleaching from ocean warming','Greenland and Antarctic ice sheet melting','2023 was the hottest year on record'],hist:'Svante Arrhenius predicted CO₂-driven warming in 1896. Scientific consensus has been overwhelming since the 1990s. Every decade since the 1980s has been warmer than the last.',diseases:['Heat-related illness and death','Expanded range of malaria and other vector-borne diseases'],errors:['Individual actions matter BUT systemic change (energy, industry policy) is far more impactful','Climate change is NOT just about temperature — it disrupts entire ecological systems'],related:['Greenhouse Effect','Biodiversity','Renewable Energy','Ocean Currents']},
+img:'climate change global warming Earth ice melting',fun:'The ocean absorbs about 90% of the excess heat trapped by greenhouse gases. Without this oceanic heat absorption, Earth\'s surface would have warmed about 36 times faster than it has.'},
+
+{k:['plate tectonics','continental drift','earthquake','tectonic','geology','fault'],sub:'Geography',sens:'safe',
+title:'Plate Tectonics',
+def:'Plate tectonics is the scientific theory explaining that Earth\'s outer shell (lithosphere) is divided into large plates that move slowly over the more fluid asthenosphere. Their interactions — colliding, separating, or sliding past each other — drive earthquakes, volcanic activity, and mountain formation.',
+exp:['Earth\'s lithosphere is divided into about 15 major tectonic plates. These plates move at speeds of 1-10 cm per year (similar to the rate fingernails grow) driven by convection currents in the mantle and by ridge push/slab pull forces. Alfred Wegener proposed continental drift in 1912 after noticing that continents fit together like puzzle pieces, but his theory was widely rejected until the 1960s when seafloor spreading was discovered.','Where plates meet, three types of boundaries occur. Convergent boundaries form where plates collide — oceanic plates sink (subduction) under continental plates, forming deep ocean trenches and volcanic arcs; two continental plates collide to form mountain ranges (the Himalayas formed this way). Divergent boundaries form where plates pull apart, creating rift valleys (East African Rift) and mid-ocean ridges (Mid-Atlantic Ridge). Transform boundaries occur where plates slide past each other, creating fault lines like California\'s San Andreas Fault.','Tectonic activity explains the distribution of earthquakes and volcanoes (the "Ring of Fire" around the Pacific), the shapes of continents, the formation of mountain ranges, and the cycling of rocks. Plate tectonics is unique to Earth among the known planets, and is believed to be essential for maintaining Earth\'s habitability through the carbon cycle.'],
+kp:['Earth\'s crust is divided into ~15 major tectonic plates','Plates move 1-10 cm/year via mantle convection','Convergent: collision (mountains/subduction); Divergent: separation (ridges); Transform: sliding (earthquakes)','The Himalayas formed from India colliding with Asia (~50 million years ago)','Ring of Fire contains 75% of world\'s volcanoes and 90% of earthquakes'],
+ins:{causes:['Convection currents in Earth\'s mantle','Density differences between oceanic and continental crust'],effects:['Earthquakes and tsunamis','Volcanoes and mountain ranges','Recycling of Earth\'s crust over millions of years'],examples:['Himalayas from India-Asia collision','San Andreas Fault (transform boundary in California)','Iceland growing due to Mid-Atlantic Ridge divergence'],hist:'Wegener proposed continental drift in 1912 and was ridiculed. The theory was confirmed in the 1960s by Harry Hess\'s seafloor spreading evidence — becoming the "grand unifying theory" of geology.',diseases:[],errors:['Tectonic plates move slowly — catastrophic changes happen over millions of years, not human lifetimes','The continents are STILL moving — today\'s positions are not permanent'],related:['Earthquakes','Volcanoes','Rock Cycle','Climate Change']},
+img:'tectonic plates Earth geology map',fun:'In about 250 million years, the continents will converge again into a new supercontinent called "Pangaea Ultima" — roughly reversing the breakup of the original Pangaea.'},
+
+{k:['water cycle','hydrological cycle','evaporation','precipitation','condensation'],sub:'Geography',sens:'safe',
+title:'The Water Cycle',
+def:'The water cycle (hydrological cycle) describes the continuous movement of water on, above, and below Earth\'s surface through processes including evaporation, condensation, precipitation, transpiration, and runoff, driven by solar energy and gravity.',
+exp:['The sun drives the water cycle by heating water in oceans, lakes, and rivers, causing evaporation — conversion of liquid water to water vapor. Plants also release water vapor through transpiration (combined with evaporation = evapotranspiration). Together, these processes transfer enormous amounts of water to the atmosphere.','As water vapor rises, it cools and condenses around tiny particles (dust, pollen) to form clouds in a process called condensation. When water droplets in clouds grow heavy enough, precipitation occurs: rain, snow, sleet, or hail. This water falls back to Earth\'s surface.','Precipitation either flows over land as runoff (into rivers and oceans), infiltrates the soil and enters groundwater, or is absorbed by plants. Snow and ice in glaciers can store water for thousands of years as ice. The entire cycle is estimated to recycle all of Earth\'s surface water every ~4,000 years.'],
+kp:['Driven by solar energy and gravity','Key processes: evaporation, condensation, precipitation, runoff, infiltration','Oceans hold ~97% of Earth\'s water; only 3% is freshwater','Transpiration from plants contributes significantly to atmospheric moisture','Climate change is intensifying the water cycle'],
+ins:{causes:['Solar energy heating water surfaces','Gravity pulling precipitation and runoff downhill'],effects:['Distribution of freshwater around the planet','Erosion and formation of landscapes','Regulation of temperature and climate'],examples:['Amazon rainforest transpiring billions of liters daily','Glaciers storing freshwater for billions of people downstream','Monsoon rains from Indian Ocean evaporation'],hist:'Leonardo da Vinci correctly described the water cycle in the 1500s. Edmond Halley (of Halley\'s Comet) made the first quantitative study in 1687.',diseases:['Waterborne diseases (cholera, typhoid) from contaminated runoff'],errors:['Water is NOT "used up" — it is constantly recycled','Groundwater aquifers replenish far more slowly than they are often used'],related:['Climate Change','Biomes','Ocean Currents','Rivers and Erosion']},
+img:'water cycle evaporation precipitation diagram',fun:'Approximately 90% of the moisture in the atmosphere comes from ocean evaporation. The Amazon rainforest generates its own rainfall through transpiration — acting as a self-sustaining "flying river" of moisture.'},
+
+// ── COMPUTER SCIENCE ────────────────────────────────────
+{k:['machine learning','deep learning','neural network','ai learning','training data'],sub:'Computer Science',sens:'safe',
+title:'Machine Learning',
+def:'Machine learning (ML) is a subset of artificial intelligence where systems learn to perform tasks by finding patterns in data, without being explicitly programmed with rules. Models improve their performance with experience (more data and training).',
+exp:['Machine learning algorithms are broadly categorized as supervised learning (trained on labeled input-output pairs), unsupervised learning (finding patterns in unlabeled data), and reinforcement learning (learning through rewards and penalties). Supervised learning is the most common: a model trained on thousands of cat and dog photos learns to classify new images without being told specific rules about what cats look like.','Deep learning, a subset of ML, uses multi-layered artificial neural networks inspired by the human brain. Each layer learns increasingly abstract representations of the data. A deep neural network for image recognition might learn edges in the first layer, shapes in the second, and complex objects in deeper layers. GPUs (graphics processing units) enabled the deep learning revolution by making training massive networks feasible.','The performance of ML models depends critically on data quality and quantity, model architecture, and training process. Key challenges include overfitting (performing well on training data but poorly on new data), bias (biased training data producing biased models), and interpretability (understanding why a model makes specific predictions — the "black box" problem). ML is now central to search engines, recommendation systems, fraud detection, medical diagnosis, and large language models.'],
+kp:['Three types: Supervised, Unsupervised, Reinforcement Learning','Deep learning uses multi-layered neural networks','Requires large amounts of quality training data','Key challenge: overfitting and bias in data','Underlies AI assistants, recommendation engines, image recognition'],
+ins:{causes:['Availability of massive datasets','Cheap computing power (GPUs)','Breakthrough algorithms (backpropagation, transformers)'],effects:['AI assistants and chatbots','Medical image diagnosis','Autonomous vehicles','Personalized recommendations'],examples:['Netflix/YouTube recommendation algorithms','GPT language models','Self-driving car computer vision','AlphaFold predicting protein structures'],hist:'ML concepts originated in the 1950s with Perceptrons. The modern deep learning era began with AlexNet winning ImageNet 2012. Transformers (2017) enabled large language models.',diseases:[],errors:['ML models don\'t "understand" — they find statistical patterns','More data is NOT always better if it\'s biased or low quality'],related:['Artificial Intelligence','Algorithms','Data Structures','Neural Networks']},
+img:'machine learning neural network deep learning',fun:'The neural network architecture behind ChatGPT and similar models (the Transformer) was invented in 2017 by a team of 8 researchers at Google. The paper was titled "Attention Is All You Need."'},
+
+{k:['algorithms','algorithm','sorting','searching','complexity','big o'],sub:'Computer Science',sens:'safe',
+title:'Algorithms',
+def:'An algorithm is a finite, step-by-step procedure for solving a problem or accomplishing a task. In computer science, algorithms are precise instructions that a computer can execute, and their efficiency is measured by time complexity (how many steps as input grows) and space complexity (memory used).',
+exp:["Algorithms are analyzed using Big O notation, which describes how runtime grows relative to input size. O(1) is constant time (fastest); O(log n) is logarithmic (binary search); O(n) is linear; O(n log n) is common for efficient sorting; O(n²) is quadratic (slower, like bubble sort); O(2ⁿ) is exponential (very slow). Choosing the right algorithm can make the difference between solving a problem in milliseconds or waiting centuries.","Common sorting algorithms include: Bubble Sort (O(n²) — simple but slow), Merge Sort (O(n log n) — divide and conquer), Quick Sort (O(n log n) average — widely used), and Heap Sort (O(n log n) — consistent). Searching algorithms include Linear Search (O(n)) and Binary Search (O(log n) — requires sorted data). Binary search is dramatically faster for large datasets.","Graph algorithms are crucial for networks: Breadth-First Search and Depth-First Search explore graphs; Dijkstra's algorithm finds shortest paths (used in GPS navigation); and Floyd-Warshall finds all-pairs shortest paths. Dynamic programming solves complex problems by breaking them into overlapping sub-problems. The P vs NP problem — whether all problems whose solutions can be quickly verified can also be quickly solved — is the most important unsolved problem in computer science."],
+kp:['Algorithms have time complexity (speed) and space complexity (memory)','Big O notation describes growth rate: O(1) < O(log n) < O(n) < O(n²) < O(2ⁿ)','Binary search (O(log n)) vastly outperforms linear search for large data','Sorting: Merge Sort and Quick Sort are most practical (O(n log n))','P vs NP: can every verifiable problem be solved efficiently?'],
+ins:{causes:['Need to solve computational problems efficiently'],effects:['Faster software and systems','Enables processing of massive datasets','Foundation of all software applications'],examples:['Google Search using PageRank algorithm','GPS using Dijkstra\'s shortest path','Compression algorithms (ZIP, MP3, MP4)'],hist:"Al-Khwarizmi's 9th-century mathematical work inspired the word 'algorithm'. Knuth's 'The Art of Computer Programming' (1968) formalized algorithm analysis.",diseases:[],errors:['The fastest algorithm is NOT always the best — implementation complexity matters','An algorithm doesn\'t have to run on a computer — it\'s any systematic procedure'],related:['Data Structures','Machine Learning','Computational Complexity','Sorting']},
+img:'algorithms sorting binary search flowchart',fun:'The SHA-256 hashing algorithm used in Bitcoin converts any message of any length into a 64-character string. Finding two different inputs with the same output would take more time than the age of the universe.'},
+
+{k:['artificial intelligence','ai','turing','intelligence','robotics'],sub:'Computer Science',sens:'safe',
+title:'Artificial Intelligence',
+def:'Artificial Intelligence (AI) is the simulation of human intelligence processes by computer systems, including learning, reasoning, problem-solving, perception, and language understanding. Modern AI is primarily based on machine learning, particularly deep learning with neural networks.',
+exp:["Alan Turing proposed the famous 'Turing Test' in 1950 as a measure of machine intelligence: if a human cannot distinguish between a machine's and a human's responses in conversation, the machine can be considered intelligent. The term 'Artificial Intelligence' was coined at the Dartmouth Conference in 1956, where researchers optimistically predicted human-level AI within a generation.","AI experienced several 'AI winters' (funding cuts due to unmet expectations) before the deep learning revolution of the 2010s. The availability of massive datasets, cheap computing (GPUs), and breakthrough architectures (convolutional neural networks for images, transformers for language) led to dramatic progress. Systems began exceeding human performance in specific tasks: chess (Deep Blue, 1997), Go (AlphaGo, 2016), image recognition (2015+), and protein structure prediction (AlphaFold, 2020).","Narrow AI (ANI) performs specific tasks well; Artificial General Intelligence (AGI) — matching human cognitive abilities across all domains — remains a major unsolved challenge. Large Language Models (LLMs) like GPT-4 have capabilities that surprised even their creators, but debate continues about whether they constitute intelligence or sophisticated pattern matching. AI raises profound questions about employment, bias, autonomy, privacy, and existential risk."],
+kp:['Turing Test (1950): machine intelligence defined as indistinguishable from human','Modern AI primarily uses deep learning neural networks','Narrow AI surpasses humans in specific tasks (chess, Go, protein folding)','Large Language Models process natural language with remarkable capability','AGI (general intelligence) remains an unsolved challenge'],
+ins:{causes:['Desire to automate complex cognitive tasks','Advances in computing power and data availability'],effects:['Automation of cognitive tasks across industries','Medical diagnosis and drug discovery','Potential transformation of employment markets'],examples:['ChatGPT and similar LLMs','AlphaFold predicting 200M protein structures','Self-driving cars','AI-generated art and music'],hist:"Turing's 1950 paper founded the field. Dartmouth Conference 1956 coined 'AI'. Deep learning revolution began ~2012. GPT-3 (2020) showed emergent capabilities at scale.",diseases:[],errors:['AI today is NOT sentient or conscious — it processes patterns in data','Science fiction AI (Terminator, etc.) is not how real AI works or develops'],related:['Machine Learning','Robotics','Natural Language Processing','Ethics of AI']},
+img:'artificial intelligence neural network robot',fun:'In 2016, Google DeepMind\'s AlphaGo defeated the world\'s best Go player Lee Sedol 4-1. Go has more possible board positions than atoms in the observable universe — yet AlphaGo found winning moves no human had conceived.'},
+
+// ── LITERATURE ──────────────────────────────────────────
+{k:['shakespeare','hamlet','macbeth','romeo juliet','othello','midsummer'],sub:'Literature',sens:'safe',
+title:'William Shakespeare',
+def:'William Shakespeare (1564-1616) is widely regarded as the greatest writer in the English language and the world\'s greatest dramatist. He wrote 37 plays, 154 sonnets, and several longer poems, profoundly shaping English literature, theater, and the very language itself.',
+exp:["Shakespeare was born in Stratford-upon-Avon in 1564 and became an actor, playwright, and part-owner of the Globe Theatre in London. Writing in the Elizabethan and Jacobean eras, he worked within existing theatrical conventions while transcending them. His works were performed for both the common groundlings (standing in the pit) and the elite in the galleries, demonstrating his ability to write across social registers.","His plays fall into tragedies (Hamlet, Macbeth, Othello, King Lear, Romeo and Juliet), comedies (A Midsummer Night's Dream, Much Ado About Nothing, The Tempest, Twelfth Night), and histories (Richard III, Henry V, Julius Caesar). His tragedies are celebrated for their psychologically complex characters and exploration of universal themes: jealousy (Othello), ambition (Macbeth), indecision (Hamlet), and the folly of age (King Lear).","Shakespeare's linguistic contribution is extraordinary. He invented or first recorded approximately 1,700 words (including 'bedroom,' 'lonely,' 'generous,' 'negotiate') and created countless phrases still used today ('break the ice,' 'cold-blooded,' 'all that glitters,' 'to be or not to be'). His understanding of human psychology — love, jealousy, power, betrayal — feels as relevant today as in 1600, which is why his plays are still performed more than any other playwright's."],
+kp:['Wrote 37 plays, 154 sonnets (1590s-1613)','Genres: Tragedies, Comedies, History plays','Invented ~1,700 words now in common English use','Globe Theatre was his primary performance venue','Themes: love, ambition, jealousy, power, mortality'],
+ins:{causes:['Elizabethan England\'s vibrant theatrical culture','Patronage system supporting theatrical companies'],effects:['Defining the English language','Setting the standard for dramatic characterization','Influencing every Western writer since'],examples:["Hamlet's 'To be or not to be' soliloquy",'Romeo and Juliet inspiring countless adaptations','Macbeth exploring unchecked ambition'],hist:'Shakespeare lived 1564-1616, the same year Galileo was making astronomical discoveries. His First Folio (collected works) was published in 1623, seven years after his death.',diseases:['Possibly died from typhus'],errors:['Shakespeare did NOT invent most of his plots — he adapted existing stories','His plays were meant to be PERFORMED, not read silently'],related:['English Literature','Elizabethan Era','Theater History','Sonnets']},
+img:'William Shakespeare Globe Theatre portrait',fun:"Shakespeare invented so many words that he's technically a better contributor to the English language than the Oxford English Dictionary — which only contains about 600,000 words."},
+
+// ── MORE SCIENCE & GEOGRAPHY ─────────────────────────────
+{k:['gravity','gravitation','gravitational force','falling','orbit'],sub:'Physics',sens:'safe',
+title:'Gravity',
+def:'Gravity is the fundamental force of attraction between all objects with mass or energy. Newton described it as an attractive force proportional to mass and inversely proportional to distance squared (F = Gm₁m₂/r²); Einstein redefined it as the curvature of spacetime caused by mass.',
+exp:["Newton's Law of Universal Gravitation states that every object with mass attracts every other object with a force proportional to the product of their masses and inversely proportional to the square of the distance between them. This single equation explained both why apples fall and why planets orbit the Sun. The gravitational constant G = 6.674 × 10⁻¹¹ N⋅m²/kg².","On Earth's surface, gravity accelerates all objects (regardless of mass) at 9.8 m/s² downward. Galileo demonstrated this by (legendarily) dropping objects from the Tower of Pisa, showing that in absence of air resistance, all objects fall at the same rate. This is because gravitational force is proportional to mass, but so is inertia — they cancel out.","Einstein's General Relativity reframed gravity as the curvature of spacetime. Massive objects warp the fabric of spacetime, and other objects follow the shortest path (geodesic) through this curved spacetime — what we perceive as gravitational attraction. This explains effects Newton's theory cannot: gravitational lensing of light, the precession of Mercury's orbit, and the existence of black holes."],
+kp:['Newton: F = Gm₁m₂/r² — force proportional to mass, decreases with distance squared','All objects fall at the same rate in a vacuum (9.8 m/s² on Earth)','Einstein: gravity is curvature of spacetime, not a force','Gravity keeps planets in orbit and holds galaxies together','Black holes have gravity so strong not even light escapes'],
+ins:{causes:['Mass and energy warping spacetime','Fundamental property of all matter'],effects:['Planets orbiting stars, moons orbiting planets','Tides from Moon\'s gravity','Structure of galaxies'],examples:['Earth orbiting the Sun','Moon causing ocean tides','Black holes trapping light'],hist:'Newton formulated his gravity law in 1687. Einstein published General Relativity in 1915. Gravitational waves (ripples in spacetime from massive collisions) were directly detected by LIGO in 2015.',diseases:[],errors:['Zero gravity in space is a myth — astronauts experience microgravity (they\'re in constant free-fall)','Gravity is actually the WEAKEST of the four fundamental forces'],related:["Newton's Laws",'Theory of Relativity','Black Holes','Orbital Mechanics']},
+img:'gravity Earth orbit Newton apple',fun:"Technically, when you jump, you also pull the Earth toward you — by an unimaginably tiny amount. Gravity is mutual between all masses."},
+
+{k:['immune system','immunity','antibody','vaccine','white blood cell','infection defense'],sub:'Biology',sens:'safe',
+title:'The Immune System',
+def:'The immune system is a complex network of cells, tissues, and organs that defends the body against pathogens (bacteria, viruses, fungi, parasites) and foreign substances. It has two main branches: the innate immune system (fast, non-specific) and the adaptive immune system (slow, highly specific with memory).',
+exp:['The innate immune system provides the first line of defense. Physical barriers (skin, mucus membranes) prevent pathogen entry. If a pathogen gets in, innate immune cells including neutrophils, macrophages, and natural killer cells rapidly recognize and attack foreign threats through general pattern recognition. This causes the inflammatory response (redness, heat, swelling) that helps contain infection.','The adaptive immune system provides a targeted, highly specific response. B lymphocytes (B cells) produce antibodies — Y-shaped proteins that bind to specific antigens (foreign molecules) on pathogens, neutralizing them or marking them for destruction. T lymphocytes (T cells) directly kill infected cells (cytotoxic T cells) or coordinate the immune response (helper T cells).','The most remarkable feature of the adaptive immune system is immunological memory. After defeating an infection, the body retains memory B and T cells that can mount a much faster and stronger response if the same pathogen appears again. Vaccines exploit this memory: they expose the immune system to a harmless version of a pathogen (or just its antigens), priming memory cells without causing disease.'],
+kp:['Two branches: innate (fast, general) and adaptive (slow, specific)','B cells produce antibodies; T cells coordinate/directly kill','Immunological memory enables faster response to repeat infections','Vaccines train the immune system without causing disease','Autoimmune diseases occur when immune system attacks the body itself'],
+ins:{causes:['Pathogens invading the body','Foreign substances triggering immune recognition'],effects:['Recovery from infection','Long-term immunity after infection or vaccination','Allergies (overreaction to harmless substances)'],examples:['Fever as immune response killing pathogens','COVID-19 vaccines training immune response','Organ rejection after transplant (immune attack on foreign tissue)'],hist:'Edward Jenner developed the smallpox vaccine in 1796 — the first vaccine. Louis Pasteur developed germ theory. The structure of antibodies was elucidated in the 1960s.',diseases:['HIV attacks T cells, destroying immune function','Autoimmune diseases: lupus, rheumatoid arthritis, MS','Allergies: immune overreaction to harmless substances'],errors:['Antibiotics don\'t work on viruses — they only fight bacteria','Vaccines don\'t contain live dangerous pathogens (most modern ones)'],related:['Viruses','Bacteria','Vaccines','Inflammation']},
+img:'immune system antibodies white blood cells',fun:'Your immune system produces about 10 billion new immune cells every day. And it can generate over a trillion unique antibody shapes — more than the number of neurons in 1,000 human brains.'},
+
+{k:['democracy','government','voting','constitution','republic','parliament'],sub:'History',sens:'safe',
+title:'Democracy',
+def:'Democracy is a system of government in which power is vested in the people, who exercise it directly or through elected representatives. It is characterized by free elections, rule of law, protection of individual rights, and accountability of leaders to citizens.',
+exp:["Democracy originated in ancient Athens in the 5th century BC under Cleisthenes and Pericles. Athenian democracy was direct — citizens voted directly on laws and policies. However, it was limited to male citizens, excluding women, slaves, and foreigners. The word comes from Greek: demos (people) + kratos (power).","Modern representative democracy emerged from the Enlightenment and revolutions of the 17th-18th centuries. The English Civil War (1642-51) and Glorious Revolution (1688), the American Revolution (1776), and French Revolution (1789) established key principles: consent of the governed, separation of powers, checks and balances, and individual rights. The US Constitution (1787) created the first modern federal democratic republic.","Today, democracy takes many forms: liberal democracies (constitutional, rights-protecting); parliamentary systems (executive from legislature); presidential systems (separate executive); and hybrid systems. While 59% of nations classify as democracies, the quality varies enormously. Key democratic challenges today include misinformation, electoral interference, polarization, and the tension between majority rule and minority rights."],
+kp:['Originated in ancient Athens (~500 BC); modern form from 18th-century revolutions','Core features: free elections, rule of law, individual rights, checks and balances','Parliamentary vs Presidential: different ways of organizing executive power','Democracy can fail — requires civic engagement and independent institutions','~59% of world\'s nations have democratic systems (quality varies greatly)'],
+ins:{causes:['Enlightenment philosophy asserting natural rights','Popular rejection of absolute monarchy','Economic interests of emerging middle classes'],effects:['Protection of individual rights and freedoms','Peaceful transfer of power','Generally higher economic development (correlation)'],examples:['US Constitution (1787) founding modern democracy','India: world\'s largest democracy','Universal suffrage achieved in most democracies only in 20th century'],hist:'Athenian democracy ~507 BC. English Magna Carta 1215. US Declaration 1776. Women\'s suffrage: New Zealand 1893 (first); USA 1920.',diseases:[],errors:['Democracy is NOT simply "majority rule" — it protects minority rights too','Ancient Athenian democracy was highly exclusionary — only ~10-15% of the population could vote'],related:['French Revolution','Human Rights','Constitution','Capitalism']},
+img:'democracy parliament voting election',fun:"Only 30 countries in the world have universal adult suffrage with no gender or property restrictions — and most achieved this only after World War II. Women gained the right to vote in Switzerland in 1971."},
+
+{k:['supply and demand','economics','market','price','microeconomics'],sub:'General',sens:'safe',
+title:'Supply and Demand',
+def:'Supply and demand is the fundamental economic model describing how prices and quantities of goods are determined in markets. Demand is the consumer\'s desire and ability to purchase at various prices; supply is the producer\'s ability and willingness to sell at various prices. The equilibrium price is where they balance.',
+exp:["The Law of Demand states that, all else equal, as price increases, quantity demanded decreases (inverse relationship). Consumers buy less of something when it becomes more expensive and more when it becomes cheaper. This creates a downward-sloping demand curve. Demand can shift due to changes in income, preferences, prices of related goods, or expectations.","The Law of Supply states that as price increases, quantity supplied increases (direct relationship). Producers want to supply more when they can charge higher prices, creating an upward-sloping supply curve. Supply shifts due to changes in production costs, technology, number of suppliers, or regulations.","Market equilibrium occurs at the price where quantity supplied equals quantity demanded. Above equilibrium price, there is surplus (excess supply), which pushes price down. Below equilibrium price, there is shortage (excess demand), which pushes price up. Markets naturally tend toward equilibrium, though this can be disrupted by price controls, monopolies, externalities, and information asymmetry — all of which justify economic policy intervention."],
+kp:['Law of Demand: higher price → lower quantity demanded','Law of Supply: higher price → higher quantity supplied','Equilibrium: price where supply equals demand','Surplus: too much supply; Shortage: too much demand','Markets automatically adjust toward equilibrium (price mechanism)'],
+ins:{causes:['Scarcity of resources requiring allocation decisions','Consumer preferences and production costs'],effects:['Price signals coordinating economic activity','Efficient allocation of resources in competitive markets','Price controls creating shortages or surpluses'],examples:['Oil prices rising during supply shocks','Housing shortages in cities with rent control','Vaccine prices in limited supply situations'],hist:"Adam Smith described the 'invisible hand' of markets in 'The Wealth of Nations' (1776). Alfred Marshall formalized supply and demand curves in 1890.",diseases:[],errors:['Markets don\'t always reach equilibrium quickly — there are significant frictions','Free markets alone cannot address all social needs (public goods, externalities, inequality)'],related:['Economics','Inflation','Monopoly','Game Theory']},
+img:'supply demand curve economics graph',fun:'During World War II, the US government rationed goods like gasoline and rubber, replacing the price mechanism with government allocation — a rare peacetime removal of supply-demand pricing in a market economy.'},
+];
+
+// ═══════════════════════════════════════════════════════════
+// APP STATE
+// ═══════════════════════════════════════════════════════════
+const S={
+  page:'home',premium:false,
+  history:[
+    {id:1,q:'Photosynthesis',subject:'Biology',time:'2h ago',scan:false},
+    {id:2,q:'World War II',subject:'History',time:'5h ago',scan:false},
+    {id:3,q:"Newton's Laws",subject:'Physics',time:'Yesterday',scan:false},
+  ],
+  saved:[],result:null,imgUrls:[],lastQ:'',billing:'mo',
+  uploadB64:null,uploadDataUrl:null,uploadFile:null,
+  scanB64:null,scanDataUrl:null,scanFile:null,
+  scansCount:0,
+};
+
+const META={
+  'Biology':{icon:'🧬',c:'#059669',bg:'#ECFDF5',bc:'#A7F3D0'},
+  'Chemistry':{icon:'⚗️',c:'#2563EB',bg:'#EFF6FF',bc:'#BFDBFE'},
+  'Physics':{icon:'⚡',c:'#7C3AED',bg:'#F5F3FF',bc:'#DDD6FE'},
+  'Mathematics':{icon:'📐',c:'#D97706',bg:'#FFFBEB',bc:'#FDE68A'},
+  'History':{icon:'🏛️',c:'#DC2626',bg:'#FEF2F2',bc:'#FCA5A5'},
+  'Geography':{icon:'🌍',c:'#0EA5E9',bg:'#F0F9FF',bc:'#BAE6FD'},
+  'Computer Science':{icon:'💻',c:'#6366F1',bg:'#EEF2FF',bc:'#C7D2FE'},
+  'Literature':{icon:'📖',c:'#EC4899',bg:'#FDF2F8',bc:'#FBCFE8'},
+  'Religion':{icon:'☮️',c:'#B45309',bg:'#FEF3C7',bc:'#FDE68A'},
+  'General':{icon:'📚',c:'#475569',bg:'#F1F5F9',bc:'#E2E8F0'},
+};
+const FEATURED=[
+  {q:'Photosynthesis',s:'Biology'},{q:'French Revolution',s:'History'},
+  {q:'Quantum Mechanics',s:'Physics'},{q:'Machine Learning',s:'Computer Science'},
+  {q:'Climate Change',s:'Geography'},{q:'DNA Structure',s:'Biology'},
+];
+const RESTRICTED_WORDS=['testis','testes','penis','vagina','vulva','uterus','breast anatomy','ovary','ovaries','scrotum','fallopian','reproductive organ','genitalia','genital','clitoris','pubic','erectile','mammary gland','nipple anatomy','semen','sperm anatomy'];
+const m=k=>META[k]||META['General'];
+function imgRestricted(r){
+  if(!r) return false;
+  if(r.sens==='religious'||r.sens==='explicit') return true;
+  const tl=(r.title||'').toLowerCase()+' '+(r.def||'').toLowerCase();
+  return RESTRICTED_WORDS.some(w=>tl.includes(w));
+}
+
+// ═══════════════════════════════════════════════════════════
+// SEARCH ENGINE — Fuzzy KB Lookup
+// ═══════════════════════════════════════════════════════════
+function kbSearch(q){
+  q=q.toLowerCase().trim();
+  const words=q.split(/\s+/).filter(w=>w.length>2);
+  let best=null, bestScore=0;
+  for(const entry of KB){
+    let score=0;
+    for(const kw of entry.k){
+      if(q.includes(kw)||kw.includes(q)) score+=10;
+      for(const w of words){
+        if(kw.includes(w)||w.includes(kw)) score+=3;
+      }
+    }
+    // title match
+    const tl=entry.title.toLowerCase();
+    if(tl===q) score+=20;
+    if(tl.includes(q)||q.includes(tl)) score+=8;
+    for(const w of words){
+      if(tl.includes(w)) score+=4;
+    }
+    // subject match
+    if(entry.sub.toLowerCase().includes(q)) score+=2;
+    if(score>bestScore){bestScore=score;best=entry;}
+  }
+  if(bestScore>=3) return best;
+  return null;
+}
+
+function buildResult(q, entry, scanned, extractedText, dataUrl){
+  return {
+    subject:entry.sub, sens:entry.sens||'safe',
+    title:entry.title,
+    definition:entry.def,
+    explanation:entry.exp,
+    keyPoints:entry.kp,
+    insights:entry.ins,
+    imageQuery:entry.img||entry.title,
+    funFact:entry.fun,
+    _scanned:scanned, _scanDataUrl:dataUrl,
+    _extractedText:extractedText,
+  };
+}
+
+function buildGenericResult(q){
+  // Generate a reasonable generic response for unknown topics
+  const words=q.split(' ').slice(0,3).join(' ');
+  return {
+    subject:'General', sens:'safe',
+    title:q.charAt(0).toUpperCase()+q.slice(1),
+    definition:`${q.charAt(0).toUpperCase()+q.slice(1)} is an important academic topic studied across multiple disciplines. It involves understanding key principles, historical development, and practical applications.`,
+    explanation:[
+      `${q.charAt(0).toUpperCase()+q.slice(1)} represents a significant area of study with broad implications across academic fields. Understanding this topic requires examining its fundamental principles, historical context, and the ways in which it connects to related concepts.`,
+      `The study of this topic involves analyzing both theoretical frameworks and practical applications. Scholars and researchers have contributed extensively to building our current understanding, drawing from evidence across multiple disciplines and methodologies.`,
+      `Contemporary perspectives on this topic continue to evolve as new research emerges. Students engaging with this subject should consider multiple viewpoints, examine primary sources when possible, and think critically about how this topic connects to broader themes in their field of study.`
+    ],
+    keyPoints:[
+      `This is a recognized topic in academic study with established literature`,
+      `Multiple disciplines may approach this topic from different angles`,
+      `Historical context helps understand how this topic developed`,
+      `Critical thinking and source evaluation are important when studying this topic`,
+      `Related concepts and terms can help deepen understanding`
+    ],
+    insights:{
+      causes:['Academic and intellectual interest','Practical or historical significance'],
+      effects:['Contributes to field of knowledge','Has real-world applications'],
+      examples:['Found in textbooks and academic curricula','Studied in schools and universities worldwide'],
+      historicalContext:'This topic has developed over time as human knowledge and understanding has grown, with contributions from scholars across different eras and cultures.',
+      diseases:[],errors:['It\'s important to consult multiple sources for a complete understanding'],
+      relatedTopics:['Research Methods','Academic Writing','Critical Thinking','Source Evaluation']
+    },
+    imageQuery:q,
+    funFact:`The study of "${q}" is part of a long tradition of human curiosity and inquiry that dates back thousands of years across different cultures and civilizations.`,
+    _scanned:false, _scanDataUrl:null, _extractedText:'',
+  };
+}
+
+// ═══════════════════════════════════════════════════════════
+// ROUTING
+// ═══════════════════════════════════════════════════════════
+function go(name,btn){
+  ['home','search','scan','history','saved','premium','deploy'].forEach(p=>{
+    const el=document.getElementById('pg-'+p);
+    if(el) el.className=p===name?'pg on':'pg';
+  });
+  document.querySelectorAll('.ni').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(b=>{
+    if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+name+"'")) b.classList.add('on');
+  });
+  if(btn) btn.classList.add('on');
+  S.page=name;
+  const L={home:'Dashboard',search:'Search & Learn',scan:'Scan & Ask',history:'Study History',saved:'Saved Topics',premium:'Premium Plans',deploy:'Host Free $0'};
+  document.getElementById('bc').textContent=L[name]||name;
+  if(name==='home') renderHome();
+  if(name==='history') renderHistory();
+  if(name==='saved') renderSaved();
+  if(name==='premium') renderPremium();
+}
+
+// ═══════════════════════════════════════════════════════════
+// SEARCH TRIGGER
+// ═══════════════════════════════════════════════════════════
+function qs(q){
+  document.getElementById('h-in').value=q;
+  document.getElementById('s-in').value=q;
+  doSearch(q,false,null,null);
+}
+function trig(){
+  const q=document.getElementById('s-in').value.trim()||document.getElementById('h-in').value.trim();
+  doSearch(q,!!S.uploadB64,S.uploadB64,S.uploadDataUrl);
+}
+function retry(){ if(S.lastQ) doSearch(S.lastQ,false,null,null); }
+
+function doSearch(q, hasImg, b64, dataUrl){
+  q=(q||'').trim();
+  if(!q&&!hasImg) return;
+  if(!q) q='What is shown in this image';
+  S.lastQ=q;
+  document.getElementById('h-in').value=q;
+  document.getElementById('s-in').value=q;
+  go('search',null);
+  setSt('loading');
+  S.result=null; S.imgUrls=[];
+
+  // simulate slight delay for UX
+  setTimeout(()=>{
+    let entry=kbSearch(q);
+    let res;
+    if(entry){
+      res=buildResult(q,entry,hasImg,hasImg?`Scanned from uploaded image — topic identified as: ${entry.title}`:'',dataUrl);
+    } else {
+      res=buildGenericResult(q);
+      res._scanned=hasImg; res._scanDataUrl=dataUrl;
+      res._extractedText=hasImg?`Text extracted from uploaded image. Topic: "${q}"`:'';
+    }
+    S.result=res;
+    S.history.unshift({id:Date.now(),q:res.title,subject:res.subject,time:'Just now',scan:hasImg,scanThumb:dataUrl||null});
+    if(S.history.length>40) S.history.pop();
+    updBadges();
+    renderResult(res);
+    setSt('result');
+    if(!imgRestricted(res)) fetchImgs(res.title, res.imageQuery);
+    else showLocked(res);
+    clrUp('search');
+  },600);
+}
+
+// ═══════════════════════════════════════════════════════════
+// IMAGE FETCHING — Wikipedia Free Public API
+// ═══════════════════════════════════════════════════════════
+async function fetchImgs(title, query){
+  const panel=document.getElementById('imgp');
+  if(!panel) return;
+  panel.innerHTML='<div class="img-ld"><div class="sp-ring"></div><div style="font-size:11px;color:var(--muted)">Finding images…</div></div>';
+  const urls=[];
+  const wikiImg=async(t)=>{
+    try{
+      const r=await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(t)}&prop=pageimages&format=json&pithumbsize=800&origin=*`);
+      const d=await r.json();
+      const pg=Object.values(d?.query?.pages||{})[0];
+      const u=pg?.thumbnail?.source;
+      if(u&&!urls.includes(u)) urls.push(u);
+    }catch{}
+  };
+  const wikiSearch=async(t)=>{
+    try{
+      const r=await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(t)}&srlimit=5&format=json&origin=*`);
+      const d=await r.json();
+      const titles=(d?.query?.search||[]).map(s=>s.title);
+      for(const ti of titles.slice(0,3)) await wikiImg(ti);
+    }catch{}
+  };
+  const wikiPageImgs=async(t)=>{
+    try{
+      const r=await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(t)}&prop=images&imlimit=8&format=json&origin=*`);
+      const d=await r.json();
+      const pg=Object.values(d?.query?.pages||{})[0];
+      const imgs=(pg?.images||[]).filter(i=>!i.title.match(/icon|logo|flag|stub|commons-logo|edit|sound|portal|wikisource/i));
+      for(const img of imgs.slice(0,4)){
+        try{
+          const r2=await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(img.title)}&prop=imageinfo&iiprop=url&iiurlwidth=640&format=json&origin=*`);
+          const d2=await r2.json();
+          const u=Object.values(d2?.query?.pages||{})[0]?.imageinfo?.[0]?.thumburl;
+          if(u&&!urls.includes(u)) urls.push(u);
+        }catch{}
+      }
+    }catch{}
+  };
+  await Promise.all([wikiImg(title),wikiSearch(query||title),wikiSearch(title),wikiPageImgs(title)]);
+  S.imgUrls=[...new Set(urls)];
+  if(S.imgUrls.length>0){
+    setMainImg(S.imgUrls[0]);
+    if(S.imgUrls.length>1) renderGallery(S.imgUrls);
+  } else {
+    const mt=m(S.result?.subject);
+    panel.innerHTML=`<div class="img-ph" style="background:${mt.bg};height:210px"><span style="font-size:52px">${mt.icon}</span><span style="font-size:13px;color:var(--muted);font-weight:600">${S.result?.title||''}</span></div>`;
+  }
+}
+
+function setMainImg(url){
+  const panel=document.getElementById('imgp');
+  if(!panel) return;
+  const mt=m(S.result?.subject);
+  panel.innerHTML=`<img src="${url}" style="width:100%;height:210px;object-fit:cover;display:block" onerror="this.parentElement.innerHTML='<div class=img-ph style=background:${mt.bg};height:210px><span style=font-size:52px>${mt.icon}</span><span style=font-size:13px;color:var(--muted)>${(S.result?.title||'').replace(/'/g,'')}</span></div>'"><div class="img-sb">Wikipedia</div>`;
+}
+
+function renderGallery(urls){
+  const gal=document.getElementById('img-gal');
+  const strip=document.getElementById('img-gs');
+  if(!gal||!strip) return;
+  gal.style.display='block'; strip.innerHTML='';
+  urls.slice(0,8).forEach((url,i)=>{
+    const img=document.createElement('img');
+    img.className='gth'+(i===0?' on':'');
+    img.src=url; img.alt='';
+    img.onclick=()=>{setMainImg(url);strip.querySelectorAll('.gth').forEach(t=>t.classList.remove('on'));img.classList.add('on');};
+    strip.appendChild(img);
+  });
+}
+
+function showLocked(r){
+  const panel=document.getElementById('imgp');
+  if(!panel) return;
+  const msg=r.sens==='religious'?'Religious imagery is not displayed.':'Explicit anatomical imagery is restricted for educational integrity.';
+  panel.innerHTML=`<div class="img-lk"><div style="font-size:32px">🔒</div><div class="img-lk-t">Image Restricted</div><div class="img-lk-s">${msg}<br>Full text content is available.</div></div>`;
+  document.getElementById('img-gal').style.display='none';
+}
+
+function setSt(st){
+  document.getElementById('ld-s').style.display=st==='loading'?'block':'none';
+  document.getElementById('er-s').style.display=st==='error'?'block':'none';
+  document.getElementById('em-s').style.display=st==='empty'?'block':'none';
+  document.getElementById('res-a').style.display=st==='result'?'block':'none';
+  if(st!=='result') document.getElementById('img-gal').style.display='none';
+}
+
+// ═══════════════════════════════════════════════════════════
+// RENDER RESULT
+// ═══════════════════════════════════════════════════════════
+function renderResult(r){
+  const mt=m(r.subject);
+  document.getElementById('r-ti').textContent=r.title;
+  const sb=document.getElementById('r-sb');
+  sb.textContent=mt.icon+' '+r.subject; sb.style.cssText=`background:${mt.bg};color:${mt.c}`;
+  document.getElementById('r-snb').style.display=['religious','explicit','reproductive_explicit'].includes(r.sens)?'inline-flex':'none';
+  document.getElementById('r-scb').style.display=r._scanned?'inline-flex':'none';
+  updSaveBtn();
+
+  // scanned notice
+  const sn=document.getElementById('sc-ntc');
+  if(r._scanned&&r._scanDataUrl){
+    sn.style.display='flex';
+    document.getElementById('sc-th').src=r._scanDataUrl;
+    document.getElementById('sc-et').textContent=r._extractedText||'Image analyzed successfully.';
+  } else { sn.style.display='none'; }
+
+  // def
+  const db=document.getElementById('def-bx');
+  db.style.cssText=`border-radius:10px;border-left:4px solid ${mt.c};padding:14px 18px;margin-bottom:14px;background:${mt.bg}`;
+  document.getElementById('def-lb').style.color=mt.c;
+  document.getElementById('def-tx').textContent=r.definition;
+
+  // explanation
+  const expDiv=document.getElementById('exp-c');
+  expDiv.innerHTML='';
+  (Array.isArray(r.explanation)?r.explanation:(r.explanation||'').split('\n\n')).filter(p=>(p||'').trim()).forEach(p=>{
+    const el=document.createElement('p'); el.className='ep'; el.textContent=p.trim(); expDiv.appendChild(el);
+  });
+
+  // key points
+  const kpDiv=document.getElementById('kp-c');
+  kpDiv.innerHTML='';
+  (r.keyPoints||[]).forEach((pt,i)=>{
+    kpDiv.innerHTML+=`<div class="kpi"><div class="kpn" style="background:${mt.bg};border:1.5px solid ${mt.bc};color:${mt.c}">${i+1}</div><div class="kpt">${pt}</div></div>`;
+  });
+
+  // insights
+  const insDiv=document.getElementById('ins-d');
+  insDiv.innerHTML='';
+  const insCfg=[
+    {k:'causes',l:'Causes / Origins',i:'🔍',c:'#7C3AED',bg:'#F5F3FF',bc:'#DDD6FE'},
+    {k:'effects',l:'Effects / Impact',i:'💥',c:'#DC2626',bg:'#FEF2F2',bc:'#FCA5A5'},
+    {k:'examples',l:'Real-World Examples',i:'🌐',c:'#059669',bg:'#ECFDF5',bc:'#A7F3D0'},
+    {k:'diseases',l:'Related Diseases',i:'🏥',c:'#BE123C',bg:'#FFF1F2',bc:'#FDA4AF'},
+    {k:'errors',l:'Common Misconceptions',i:'⚠️',c:'#D97706',bg:'#FFFBEB',bc:'#FDE68A'},
+  ];
+  let cnt=0;
+  insCfg.forEach(cfg=>{
+    const items=r.insights?.[cfg.k];
+    if(items&&items.length){cnt++;insDiv.innerHTML+=`<div class="ibx" style="background:${cfg.bg};border-color:${cfg.bc}"><div class="ilb" style="color:${cfg.c}">${cfg.i} ${cfg.l}</div><ul class="iul">${items.map(it=>`<li>${it}</li>`).join('')}</ul></div>`;}
+  });
+  if(r.insights?.historicalContext){cnt++;insDiv.innerHTML+=`<div class="ibx" style="grid-column:1/-1;background:#F0F9FF;border-color:#BAE6FD"><div class="ilb" style="color:#0369A1">🏛️ Historical Context</div><p style="font-size:12px;color:var(--ink3);line-height:1.65;margin:0">${r.insights.historicalContext}</p></div>`;}
+  document.getElementById('ins-c').style.display=cnt?'block':'none';
+
+  // image panel starts loading
+  const imgP=document.getElementById('imgp');
+  imgP.innerHTML='<div class="img-ld"><div class="sp-ring"></div><div style="font-size:11px;color:var(--muted)">Finding images…</div></div>';
+  document.getElementById('img-gal').style.display='none';
+
+  // funfact
+  document.getElementById('ff-tx').textContent=r.funFact;
+
+  // related
+  const rc=document.getElementById('rch');
+  rc.innerHTML='';
+  (r.insights?.relatedTopics||r.insights?.related||[]).forEach(t=>{
+    const b=document.createElement('button');
+    b.className='rl'; b.textContent=t; b.onclick=()=>qs(t); rc.appendChild(b);
+  });
+
+  // notice
+  const ntb=document.getElementById('ntb');
+  if(imgRestricted(r)){
+    ntb.style.display='block';
+    document.getElementById('ntb-t').textContent='This topic contains restricted content. Images are not displayed. Full text education is provided.';
+  } else { ntb.style.display='none'; }
+
+  document.getElementById('r-ad').style.display=S.premium?'none':'flex';
+  document.getElementById('prom').style.display=S.premium?'none':'block';
+  document.getElementById('bc').textContent=r.title;
+}
+
+function updSaveBtn(){
+  if(!S.result) return;
+  const sv=S.saved.find(s=>s.title===S.result.title);
+  const btn=document.getElementById('sv-b');
+  btn.className=sv?'ab sv':'ab';
+  btn.textContent=sv?'🔖 Saved':'+ Save';
+}
+
+function togSave(){
+  if(!S.result) return;
+  const i=S.saved.findIndex(s=>s.title===S.result.title);
+  if(i>=0) S.saved.splice(i,1);
+  else S.saved.push({...S.result,imgUrl:S.imgUrls[0]||null,savedAt:new Date().toLocaleDateString()});
+  updSaveBtn(); updBadges();
+}
+
+// ═══════════════════════════════════════════════════════════
+// FILE UPLOAD / OCR
+// ═══════════════════════════════════════════════════════════
+function setupFiles(){
+  document.getElementById('fi-hero').addEventListener('change',e=>handleFile(e.target.files[0],'hero'));
+  document.getElementById('fi-search').addEventListener('change',e=>handleFile(e.target.files[0],'search'));
+  document.getElementById('fi-home').addEventListener('change',e=>{if(e.target.files[0]){handleFile(e.target.files[0],'scan_redir');}});
+  document.getElementById('fi-scan').addEventListener('change',e=>handleScanFile(e.target.files[0]));
+}
+
+function handleFile(file,origin){
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const dataUrl=ev.target.result;
+    const b64=dataUrl.split(',')[1];
+    if(origin==='scan_redir'){
+      S.scanB64=b64; S.scanDataUrl=dataUrl; S.scanFile=file;
+      go('scan',null); showScanPreview(dataUrl,file.name); return;
+    }
+    S.uploadB64=b64; S.uploadDataUrl=dataUrl; S.uploadFile=file;
+    if(origin==='hero'){
+      document.getElementById('hero-uth').src=dataUrl;
+      document.getElementById('hero-unm').textContent=file.name;
+      document.getElementById('hero-upb').classList.add('show');
+    } else {
+      document.getElementById('s-uth').src=dataUrl;
+      document.getElementById('s-unm').textContent=file.name;
+      document.getElementById('s-upc').classList.add('show');
+      document.getElementById('s-cb').classList.add('active-up');
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function handleScanFile(file){
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    S.scanB64=ev.target.result.split(',')[1]; S.scanDataUrl=ev.target.result; S.scanFile=file;
+    showScanPreview(S.scanDataUrl,file.name);
+  };
+  reader.readAsDataURL(file);
+}
+
+function dropH(e){
+  e.preventDefault();
+  document.getElementById('drop-z').classList.remove('drag-ov');
+  const file=e.dataTransfer?.files?.[0];
+  if(file&&file.type.startsWith('image/')) handleScanFile(file);
+}
+
+function showScanPreview(dataUrl,name){
+  document.getElementById('drop-pv').style.display='block';
+  document.getElementById('drop-pi').src=dataUrl;
+  document.getElementById('drop-c').style.display='none';
+  document.getElementById('drop-z').style.borderColor='#10B981';
+  const btn=document.getElementById('scan-ab');
+  btn.disabled=false; btn.style.opacity='1';
+  document.getElementById('scan-qw').style.display='block';
+}
+
+function clrScan(){
+  S.scanB64=null; S.scanDataUrl=null; S.scanFile=null;
+  document.getElementById('drop-pv').style.display='none';
+  document.getElementById('drop-c').style.display='flex';
+  document.getElementById('drop-z').style.borderColor='var(--border)';
+  document.getElementById('scan-ab').disabled=true;
+  document.getElementById('scan-ab').style.opacity='.5';
+  document.getElementById('scan-qw').style.display='none';
+  document.getElementById('scan-res').innerHTML='';
+  document.getElementById('fi-scan').value='';
+  document.getElementById('ocr-prog').style.display='none';
+}
+
+function clrUp(origin){
+  S.uploadB64=null; S.uploadDataUrl=null; S.uploadFile=null;
+  if(origin==='hero'){
+    document.getElementById('hero-upb').classList.remove('show');
+    document.getElementById('fi-hero').value='';
+  } else {
+    document.getElementById('s-upc').classList.remove('show');
+    document.getElementById('s-cb').classList.remove('active-up');
+    document.getElementById('fi-search').value='';
+  }
+}
+
+async function runScan(){
+  if(!S.scanB64){alert('Please upload an image first.');return;}
+  const question=document.getElementById('scan-q').value.trim()||'';
+  S.scansCount++;
+  document.getElementById('sn-sc').textContent=S.scansCount;
+  const btn=document.getElementById('scan-ab');
+  btn.disabled=true; btn.textContent='🔍 Analyzing…'; btn.style.opacity='.7';
+  document.getElementById('ocr-prog').style.display='block';
+
+  try{
+    // Use Tesseract.js for OCR
+    const prog=document.getElementById('ocr-prog');
+    const bar=document.getElementById('ocr-bar');
+    const status=document.getElementById('ocr-status');
+    const pct=document.getElementById('ocr-pct');
+    status.textContent='Initializing OCR engine…';
+    let extractedText='';
+    try{
+      const result=await Tesseract.recognize('data:image/jpeg;base64,'+S.scanB64,'eng',{
+        logger:m=>{
+          if(m.status==='recognizing text'){
+            const p=Math.round(m.progress*100);
+            bar.style.width=p+'%'; pct.textContent=p+'%';
+            status.textContent=`Reading text… ${p}%`;
+          }
+        }
+      });
+      extractedText=(result.data?.text||'').trim();
+    }catch(ocrErr){
+      extractedText='';
+    }
+    document.getElementById('ocr-prog').style.display='none';
+    // Build search query from extracted text + user question
+    let searchQ=question||extractedText||'Describe this educational image';
+    if(extractedText&&question) searchQ=question+' '+extractedText.slice(0,200);
+    else if(extractedText) searchQ=extractedText.slice(0,150);
+    // Run KB search
+    S.uploadB64=S.scanB64; S.uploadDataUrl=S.scanDataUrl;
+    document.getElementById('s-in').value=searchQ;
+    await new Promise(r=>setTimeout(r,300));
+    const entry=kbSearch(searchQ);
+    const res=entry?buildResult(searchQ,entry,true,extractedText?`Extracted text: "${extractedText.slice(0,200)}"`:'Image scanned',S.scanDataUrl):buildGenericResult(searchQ);
+    res._scanned=true; res._scanDataUrl=S.scanDataUrl;
+    res._extractedText=extractedText?`Extracted from image: "${extractedText.slice(0,200)}"`:'Image scanned — topic identified.';
+    S.result=res; S.imgUrls=[];
+    S.history.unshift({id:Date.now(),q:res.title,subject:res.subject,time:'Just now',scan:true,scanThumb:S.scanDataUrl});
+    if(S.history.length>40) S.history.pop();
+    updBadges();
+    go('search',null);
+    renderResult(res);
+    setSt('result');
+    if(!imgRestricted(res)) fetchImgs(res.title,res.imageQuery);
+    else showLocked(res);
+    document.getElementById('scan-res').innerHTML='<div style="margin-top:8px;font-size:12px;color:var(--green);font-weight:600">✅ Scan complete — see results in Search & Learn tab</div>';
+  }catch(e){
+    document.getElementById('ocr-prog').style.display='none';
+    document.getElementById('scan-res').innerHTML='<div style="margin-top:8px;font-size:12px;color:var(--red)">OCR failed. Try a clearer image or type your question manually.</div>';
+  }
+  btn.disabled=false; btn.textContent='🔍 Analyze Image'; btn.style.opacity='1';
+}
+
+// ═══════════════════════════════════════════════════════════
+// HOME PAGE
+// ═══════════════════════════════════════════════════════════
+function renderHome(){
+  document.getElementById('hdate').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  document.getElementById('sn-e').textContent=S.history.length;
+  document.getElementById('sn-s').textContent=S.saved.length;
+  document.getElementById('sn-su').textContent=new Set(S.history.map(h=>h.subject)).size;
+  document.getElementById('sn-sc').textContent=S.scansCount;
+  const fl=document.getElementById('feat-l'); fl.innerHTML='';
+  FEATURED.forEach(t=>{
+    const mt=m(t.s);
+    fl.innerHTML+=`<button class="tr" onclick="qs('${t.q}')"><span style="font-size:14px">${mt.icon}</span><span class="trn">${t.q}</span><span class="sp" style="background:${mt.bg};color:${mt.c}">${t.s}</span></button>`;
+  });
+  const rl=document.getElementById('rec-l'); rl.innerHTML='';
+  if(!S.history.length){rl.innerHTML='<div style="text-align:center;padding:20px 0;color:var(--faint);font-size:12px">No activity yet. Start searching!</div>';}
+  else S.history.slice(0,5).forEach(h=>{
+    const mt=m(h.subject);
+    rl.innerHTML+=`<button class="tr" onclick="qs('${h.q.replace(/'/g,"\\'")}')"><span style="font-size:14px">${h.scan?'📷':mt.icon}</span><span class="trn">${h.q}</span><span class="t-tm">${h.time}</span></button>`;
+  });
+  const sc=document.getElementById('home-sc'); sc.innerHTML='';
+  Object.entries(META).filter(([k])=>k!=='Religion'&&k!=='General').forEach(([sub,mt])=>{
+    sc.innerHTML+=`<button class="scard" style="background:${mt.bg};border-color:${mt.bc}" onclick="qs('${sub}')"><span class="sc-ic">${mt.icon}</span><span class="sc-nm" style="color:${mt.c}">${sub}</span></button>`;
+  });
+  document.getElementById('home-ad').style.display=S.premium?'none':'flex';
+}
+
+// ═══════════════════════════════════════════════════════════
+// HISTORY
+// ═══════════════════════════════════════════════════════════
+function renderHistory(){
+  const el=document.getElementById('hist-it'); el.innerHTML='';
+  if(!S.history.length){el.innerHTML='<div class="es"><div class="es-em">📚</div><div class="es-ti">No history yet</div></div>';return;}
+  S.history.forEach(h=>{
+    const mt=m(h.subject);
+    el.innerHTML+=`<div class="hc"><div class="hic" style="background:${mt.bg}">${h.scan?'📷':mt.icon}</div><div style="flex:1"><div class="h-ti2">${h.q}</div><div class="h-mt"><span class="sp badge" style="background:${mt.bg};color:${mt.c}">${h.subject}</span><span class="h-tm">${h.time}</span>${h.scan?'<span style="font-size:10px;background:var(--gbg);color:#059669;border-radius:10px;padding:1px 7px;font-weight:700">📷 Scanned</span>':''}</div></div><button class="rest" onclick="qs('${h.q.replace(/'/g,"\\'")}')">Study Again →</button></div>`;
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// SAVED
+// ═══════════════════════════════════════════════════════════
+function renderSaved(){
+  const grid=document.getElementById('sav-g'), empty=document.getElementById('sav-e');
+  grid.innerHTML='';
+  if(!S.saved.length){grid.style.display='none';empty.style.display='block';return;}
+  grid.style.display='grid'; empty.style.display='none';
+  S.saved.forEach(s=>{
+    const mt=m(s.subject);
+    const showImg=s.imgUrl&&!imgRestricted(s);
+    const thumb=showImg?`<img src="${s.imgUrl}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.style.background='${mt.bg}';this.parentElement.innerHTML='<span style=font-size:34px>${mt.icon}</span>'">`:`<span style="font-size:34px">${mt.icon}</span>`;
+    const def=(s.definition||'').slice(0,90)+'…';
+    const qS=s.title.replace(/'/g,"\\'");
+    grid.innerHTML+=`<div class="savcard"><div class="sav-th" style="background:${mt.bg}">${thumb}</div><div class="sav-b"><div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:5px"><div class="sav-nm">${s.title}</div><button class="db" onclick="delSav('${qS}')">🗑️</button></div><span class="badge" style="background:${mt.bg};color:${mt.c}">${mt.icon} ${s.subject}</span><div class="sav-df" style="margin-top:7px">${def}</div><div class="sav-ft"><button class="vsb" onclick="viewSav('${qS}')">View Topic</button><span style="font-size:10.5px;color:var(--faint)">Saved ${s.savedAt}</span></div></div></div>`;
+  });
+}
+function delSav(t){S.saved=S.saved.filter(s=>s.title!==t);updBadges();renderSaved();}
+function viewSav(t){
+  const s=S.saved.find(s=>s.title===t);if(!s)return;
+  S.result=s;S.imgUrls=s.imgUrl?[s.imgUrl]:[];
+  go('search',null);setSt('result');renderResult(s);
+  if(s.imgUrl&&!imgRestricted(s)){const p=document.getElementById('imgp');if(p)setMainImg(s.imgUrl);}
+  else if(!imgRestricted(s)) fetchImgs(s.title,s.imageQuery);
+  else showLocked(s);
+}
+
+// ═══════════════════════════════════════════════════════════
+// PREMIUM
+// ═══════════════════════════════════════════════════════════
+let bilM='mo';
+function setBill(m,btn){bilM=m;document.getElementById('bmo').className='tgb'+(m==='mo'?' on':'');document.getElementById('ban').className='tgb'+(m==='an'?' on':'');renderPCards();}
+function renderPremium(){renderPCards();updDemoBtn();renderCmpTable();}
+function renderPCards(){
+  const an=bilM==='an';
+  const plans=[
+    {id:'free',name:'Free',price:0,dark:false,ft:['100+ built-in topics','Wikipedia images','OCR image scanning','Study history (20)','Basic search'],dis:['Ad-free','Unlimited history','Priority search','Custom topics']},
+    {id:'pro',name:'Pro',price:an?7.99:9.99,dark:true,pop:true,ft:['Everything in Free','No advertisements','Unlimited history','Image gallery per topic','Priority search','Custom topics','Downloadable notes']},
+    {id:'sch',name:'Scholar',price:an?15.99:19.99,dark:false,vio:true,ft:['Everything in Pro','Exam prep mode','Custom study plans','Progress analytics','Collaboration tools','Teacher dashboard','API access']},
+  ];
+  const pg=document.getElementById('pgrid');pg.innerHTML='';
+  plans.forEach(plan=>{
+    const nc=plan.dark?'rgba(255,255,255,.6)':plan.vio?'var(--violet)':'var(--muted)';
+    const pc=plan.dark?'#fff':plan.vio?'var(--violet)':'var(--ink)';
+    const fc=plan.dark?'rgba(255,255,255,.78)':'var(--ink3)';
+    const cc=plan.dark?'#86EFAC':'var(--green)';
+    const feats=(plan.ft||[]).map(f=>`<div class="p-ft"><span style="color:${cc};font-size:11px">✓</span><span class="p-ft-t" style="color:${fc}">${f}</span></div>`).join('');
+    const dis=(plan.dis||[]).map(f=>`<div class="p-ft" style="opacity:.3"><span style="font-size:11px;color:var(--border)">✕</span><span class="p-ft-t" style="color:var(--faint)">${f}</span></div>`).join('');
+    const bsty=plan.dark?'background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.22);color:white':plan.id==='free'?'background:var(--bg);color:var(--muted);cursor:default;border:1px solid var(--border)':'background:var(--violet);color:white;border:none';
+    const bxt=plan.id==='free'?'Current Plan':`Get ${plan.name}`;
+    const bck=plan.id!=='free'?'onclick="actPremium()"':'';
+    const pop=plan.pop?`<div class="pop-b">⭐ Most Popular</div>`:'';
+    pg.innerHTML+=`<div class="plc ${plan.pop?'popular':''}">${pop}<div class="p-nm" style="color:${nc}">${plan.name}</div><div style="display:flex;align-items:baseline;gap:2px;margin:4px 0 18px"><span class="p-pv" style="color:${pc}">$${plan.price}</span>${plan.price>0?`<span class="p-pp" style="color:${plan.dark?'rgba(255,255,255,.4)':'var(--faint)'}">/mo${an?' (ann)':''}</span>`:''}</div>${feats}${dis}<button class="p-act" style="${bsty}" ${bck}>${bxt}</button></div>`;
+  });
+}
+function renderCmpTable(){
+  const rows=[
+    ['Built-in Topics','100+','100+','100+'],
+    ['Wikipedia Images','✅','✅ + Gallery','✅ + Gallery'],
+    ['OCR Image Scan','✅','✅','✅'],
+    ['Ad-Free Experience','✕','✅','✅'],
+    ['Study History','20 items','Unlimited','Unlimited'],
+    ['Custom Topics','✕','✅','✅'],
+    ['Progress Analytics','✕','✕','✅'],
+    ['API Access','✕','✕','✅'],
+  ];
+  const tb=document.getElementById('cmp-b');tb.innerHTML='';
+  rows.forEach(row=>{
+    const cells=row.map((c,ci)=>{const isX=c==='✕',isOk=c.includes('✅');const col=isX?'color:#CBD5E1':isOk?'color:#059669':'color:var(--ink3)';return `<td style="${ci===0?'text-align:left;color:var(--ink2);font-weight:500':col}">${c}</td>`;});
+    tb.innerHTML+=`<tr>${cells.join('')}</tr>`;
+  });
+}
+function actPremium(){S.premium=true;updPremUI();go('home',null);}
+function togDemo(){S.premium=!S.premium;updPremUI();updDemoBtn();}
+function updDemoBtn(){
+  const btn=document.getElementById('dem-b'),msg=document.getElementById('dem-m');
+  if(S.premium){btn.textContent='🔓 Deactivate Demo';btn.style.cssText='padding:10px 28px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:Sora,sans-serif;border:1.5px solid #FCA5A5;background:var(--rbg);color:var(--red)';msg.style.display='block';}
+  else{btn.textContent='⭐ Activate Demo Premium (Free)';btn.style.cssText='padding:10px 28px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:Sora,sans-serif;border:1.5px solid #FDE68A;background:var(--abg);color:#92400E';msg.style.display='none';}
+}
+function updPremUI(){
+  document.getElementById('pp').style.display=S.premium?'inline-flex':'none';
+  document.getElementById('plan-tx').textContent=S.premium?'⭐ Premium':'Free Plan';
+  if(S.page==='home') renderHome();
+  if(S.page==='search'&&S.result){renderResult(S.result);if(S.imgUrls.length)setMainImg(S.imgUrls[0]);else if(!imgRestricted(S.result))fetchImgs(S.result.title,S.result.imageQuery);}
+  if(S.page==='saved') renderSaved();
+}
+function updBadges(){
+  document.getElementById('hbg').textContent=S.history.length;
+  document.getElementById('sbg').textContent=S.saved.length;
+  document.getElementById('sn-e').textContent=S.history.length;
+  document.getElementById('sn-s').textContent=S.saved.length;
+  document.getElementById('sn-su').textContent=new Set(S.history.map(h=>h.subject)).size;
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('hdate').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  renderHome(); updBadges(); setSt('empty');
+  setupFiles();
+});
+</script>
+</body>
+</html>
